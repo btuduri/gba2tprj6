@@ -6,6 +6,7 @@
 #include <gba_input.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "inc/test.h"
 
 //---------------------------------------------------------------------------------
 // Program entry point
