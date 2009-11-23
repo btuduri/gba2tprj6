@@ -6,30 +6,50 @@
 #include <gba_input.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "inc/test.h"
 
-//---------------------------------------------------------------------------------
-// Program entry point
-//---------------------------------------------------------------------------------
+
 int main(void) {
-//---------------------------------------------------------------------------------
+	int keys_d, keys_u;
 
-
-	// the vblank interrupt must be enabled for VBlankIntrWait() to work
-	// since the default dispatcher handles the bios flags no vblank handler
-	// is required
 	irqInit();
 	irqEnable(IRQ_VBLANK);
-
+	
 	consoleDemoInit();
 
-	// ansi escape sequence to set print co-ordinates
-	// /x1b[line;columnH
-	iprintf("\x1b[10;10HHello world!\n");
-
 	while (1) {
+	
 		VBlankIntrWait();
+		scanKeys();
+		
+		keys_d = keysDown();
+		keys_u = keysUp();
+		
+		// Handle button A
+		if( keys_d & KEY_A ) {
+		
+			iprintf("\x1b[8;9HA: Ingedrukt \n");
+		
+		}
+		
+		if( keys_u & KEY_A ) {
+		
+			iprintf("\x1b[8;9HA: Losgelaten\n");
+			
+		}
+		
+		// Handle button B
+		if( keys_d & KEY_B ) {
+		
+			iprintf("\x1b[10;9HB: Ingedrukt \n");
+		
+		}
+		
+		if( keys_u & KEY_B ) {
+		
+			iprintf("\x1b[10;9HB: Losgelaten\n");
+			
+		}
+		
+		
 	}
 }
-
-
