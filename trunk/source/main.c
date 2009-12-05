@@ -159,19 +159,31 @@ void UpdateBackground(u16 x,u16 y){
 
 void GetInput()
 {
-	if(!(*KEYS & KEY_A))                   //if the up key is pressed
+	if(!(*KEYS & KEY_UP))                   //if the up key is pressed
 	{
 		spaceShip.activeFrame = 0;
 		spaceShip.y--;
-		spaceShip.x--;
 		sprites[spaceShip.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | spaceShip.y;	//setup sprite info, 256 colour, shape and y-coord
 		sprites[spaceShip.OAMSpriteNum].attribute1 = SIZE_64 | spaceShip.x;				//size 64x64 and x-coord		
 
 	}
-	if(!(*KEYS & KEY_B))                 //if the up down is pressed
+	if(!(*KEYS & KEY_DOWN))                 //if the up down is pressed
 	{
 		spaceShip.y++;
+ 		spaceShip.activeFrame = 0;
+		sprites[spaceShip.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | spaceShip.y;	//setup sprite info, 256 colour, shape and y-coord
+		sprites[spaceShip.OAMSpriteNum].attribute1 = SIZE_64 | spaceShip.x;			
+	}	
+	if(!(*KEYS & KEY_RIGHT))                 //if the up down is pressed
+	{
 		spaceShip.x++;
+ 		spaceShip.activeFrame = 0;
+		sprites[spaceShip.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | spaceShip.y;	//setup sprite info, 256 colour, shape and y-coord
+		sprites[spaceShip.OAMSpriteNum].attribute1 = SIZE_64 | spaceShip.x;			
+	}
+	if(!(*KEYS & KEY_LEFT))                 //if the up down is pressed
+	{
+		spaceShip.x--;
  		spaceShip.activeFrame = 0;
 		sprites[spaceShip.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | spaceShip.y;	//setup sprite info, 256 colour, shape and y-coord
 		sprites[spaceShip.OAMSpriteNum].attribute1 = SIZE_64 | spaceShip.x;			
