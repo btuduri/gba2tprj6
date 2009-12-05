@@ -9,7 +9,7 @@
 //	+ affine map, not compressed, 64x64 
 //	Total size: 512 + 5184 + 4096 = 9792
 //
-//	Time-stamp: 2009-12-05, 23:31:04
+//	Time-stamp: 2009-12-06, 00:33:36
 //	Exported by Cearn's GBA Image Transmogrifier, v0.8.3
 //	( http://www.coranac.com/projects/#grit )
 //
