@@ -22,6 +22,8 @@ u16* OAM = (u16*)0x7000000;
 //create the array of sprites (128 is the maximum)
 OAMEntry sprites[128];
 
+u16 x_scroll=150, y_scroll=120;
+
 //declare an instance of the background structure
 Bg bg2;
 
@@ -164,7 +166,8 @@ void GetInput()
 		spaceShip.activeFrame = 0;
 		spaceShip.y--;
 		sprites[spaceShip.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | spaceShip.y;	//setup sprite info, 256 colour, shape and y-coord
-		sprites[spaceShip.OAMSpriteNum].attribute1 = SIZE_64 | spaceShip.x;				//size 64x64 and x-coord		
+		sprites[spaceShip.OAMSpriteNum].attribute1 = SIZE_64 | spaceShip.x;		//size 64x64 and x-coord		
+		y_scroll -= 4;
 
 	}
 	if(!(*KEYS & KEY_DOWN))                 //if the up down is pressed
@@ -173,13 +176,15 @@ void GetInput()
  		spaceShip.activeFrame = 0;
 		sprites[spaceShip.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | spaceShip.y;	//setup sprite info, 256 colour, shape and y-coord
 		sprites[spaceShip.OAMSpriteNum].attribute1 = SIZE_64 | spaceShip.x;			
+		y_scroll += 4;
 	}	
 	if(!(*KEYS & KEY_RIGHT))                 //if the up down is pressed
 	{
 		spaceShip.x++;
  		spaceShip.activeFrame = 0;
 		sprites[spaceShip.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | spaceShip.y;	//setup sprite info, 256 colour, shape and y-coord
-		sprites[spaceShip.OAMSpriteNum].attribute1 = SIZE_64 | spaceShip.x;			
+		sprites[spaceShip.OAMSpriteNum].attribute1 = SIZE_64 | spaceShip.x;	
+		x_scroll += 4;
 	}
 	if(!(*KEYS & KEY_LEFT))                 //if the up down is pressed
 	{
@@ -187,6 +192,7 @@ void GetInput()
  		spaceShip.activeFrame = 0;
 		sprites[spaceShip.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | spaceShip.y;	//setup sprite info, 256 colour, shape and y-coord
 		sprites[spaceShip.OAMSpriteNum].attribute1 = SIZE_64 | spaceShip.x;			
+		x_scroll -= 4;
 	}	
 }
 
@@ -257,7 +263,7 @@ int main(void) {
 		GetInput();
 		WaitForVsync();
 		CopyOAM();
-		UpdateBackground(150, 120);
+		UpdateBackground(x_scroll, y_scroll);
 	}
 
 	return 0;
