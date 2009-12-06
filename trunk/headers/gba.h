@@ -27,11 +27,11 @@ typedef unsigned char 	byte;
 typedef unsigned short 	hword;
 typedef unsigned long 	word;
 
-u32* OAMmem  		=(u32*)0x7000000;
-u16* VideoBuffer 	=(u16*)0x6000000;
-u16* OAMData		=(u16*)0x6010000;
-u16* BGPaletteMem 	=(u16*)0x5000000;
-u16* OBJPaletteMem 	=(u16*)0x5000200;
+extern u32* OAMmem;
+extern u16* VideoBuffer;
+extern u16* OAMData;
+extern u16* BGPaletteMem;
+extern u16* OBJPaletteMem;
 
 #define MEM_IO		0x04000000
 #define MEM_PAL		0x05000000		// no 8bit write !!
@@ -192,5 +192,7 @@ u16* OBJPaletteMem 	=(u16*)0x5000200;
 #define REG_WSCNT      *(u16*)0x4000204
 #define REG_IME        *(u16*)0x4000208
 #define REG_PAUSE      *(u16*)0x4000300
+
+extern void wait_for_vsync();
 
 #endif
