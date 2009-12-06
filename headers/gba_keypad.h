@@ -1,13 +1,14 @@
-//////////////////////////////////////////////////////////////////////////
-// File: 	keypad.h                                             	//
-// Description: Contains all the keypad definitions to access buttons 	//
-// Author:	Nokturn						  	//
-// Date: 	9th January 2002                                      	//
-//////////////////////////////////////////////////////////////////////////
+/**
+ * Contains all the relevant defines for the keypad.
+ *
+ * @date	11/12/09
+ * @author	Nokturn
+ * @email	unknown
+ */
+ 
 #ifndef KEYPAD_H
 #define KEYPAD_H
 
-//Key Definitions from Nokturn's key demo
 #define KEY_A 1
 #define KEY_B 2
 #define KEY_SELECT 4

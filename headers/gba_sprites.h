@@ -1,10 +1,14 @@
-////////////////////////////////////////////////////////////////////////
-// File: 	gba_sprites.h                                             //
-// Description: contains all the definitions and structures necessary //
-//		for displaying sprites on the GBA		      //
-// Author:	dovoto (modified by gbajunkie)	                      //
-// Date: 	7th February 2002                                     //
-////////////////////////////////////////////////////////////////////////
+/**
+ * Contains all the relevant defines, variables and struct for 
+ * sprite control.
+ *
+ * @date	11/12/09
+ * @author	Dovoto
+ * @author  GBAJunkie
+ * @author  Wouter van Teijlingen
+ * @email	wouter@0xff.nl
+ */
+ 
 #ifndef SQUARES_H
 #define SQUARES_H
 
@@ -41,7 +45,9 @@
 #define PRIORITY(n)	        ((n)<<10)
 #define PALETTE(n)		((n)<<12)
 
-//sprite structure definitions
+/**
+ * sprite structure definitions
+ */
 typedef struct TagOAMEntry
 {
 	u16 attribute0;
@@ -50,7 +56,9 @@ typedef struct TagOAMEntry
 	u16 attribute3;
 }OAMEntry, *pOAMEntry;
 
-//sprite rotation information (don't worry about this for now)
+/**
+ * sprite rotation information (don't worry about this for now)
+ */
 typedef struct TagRotData
 {
 	u16 filler1[3];
@@ -63,7 +71,9 @@ typedef struct TagRotData
 	u16 pd;
 }RotData, *pRotData;
 
-//animated sprite structure required
+/**
+ * animated sprite structure required
+ */
 typedef struct
 {
 	u16 x;			//x and y position on screen
@@ -75,6 +85,7 @@ typedef struct
 
 //create an OAM variable and make it point to the address of OAM
 extern u16* OAM;
+
 //create the array of sprites (128 is the maximum)
 extern OAMEntry sprites[128];
 
