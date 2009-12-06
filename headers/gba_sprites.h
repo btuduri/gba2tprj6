@@ -42,7 +42,7 @@
 #define PALETTE(n)		((n)<<12)
 
 //sprite structure definitions
-typedef struct tagOAMEntry
+typedef struct TagOAMEntry
 {
 	u16 attribute0;
 	u16 attribute1;
@@ -51,7 +51,7 @@ typedef struct tagOAMEntry
 }OAMEntry, *pOAMEntry;
 
 //sprite rotation information (don't worry about this for now)
-typedef struct tagRotData
+typedef struct TagRotData
 {
 	u16 filler1[3];
 	u16 pa;
@@ -62,6 +62,24 @@ typedef struct tagRotData
 	u16 filler4[3];
 	u16 pd;
 }RotData, *pRotData;
+
+//animated sprite structure required
+typedef struct
+{
+	u16 x;			//x and y position on screen
+	u16 y;
+	u16 sprite_frame[3];     //animation frame storage
+	int active_frame;        //which frame is active
+	u16 OAMSpriteNum;       //which sprite referring to
+} Sprite;
+
+//create an OAM variable and make it point to the address of OAM
+extern u16* OAM;
+//create the array of sprites (128 is the maximum)
+extern OAMEntry sprites[128];
+
+extern void copy_oam();
+extern void initialize_sprites();
 
 #endif
 

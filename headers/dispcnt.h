@@ -47,6 +47,6 @@
 
 //Set the mode that you want to use, logical AND them together as below:
 //e.g. SetMode(MODE_2 | OBJ_ENABLE | OBJ_MAP_1D);
-#define SetMode(mode) REG_DISPCNT = (mode)
+#define SET_MODE(mode) REG_DISPCNT = (mode)
 
 #endif

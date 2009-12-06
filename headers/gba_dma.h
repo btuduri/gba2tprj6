@@ -1,7 +1,6 @@
 //
 // Include dma.h
 //
-
 #ifndef DMA_H
 #define DMA_H
 
@@ -70,6 +69,9 @@
 #define DMA_AT_REFRESH		0x30000000	//!< VRAM special; start at VCount=2 (DMA3)
 #define DMA_IRQ			0x40000000	//!< Enable DMA irq
 #define DMA_ON			0x80000000	//!< Enable DMA
+
+
+extern void dma_fast_copy(void* source, void* dest, unsigned int count,unsigned int mode);
 
 #endif
 

@@ -12,7 +12,7 @@ PATH := $(DEVKITARM)/bin:$(PATH)
 PROJ    := SpaceInvader
 TITLE   := $(PROJ)
 
-COBJS   := source/main.o levels/level1/sprites/Ship.o levels/level1/Spacemap.o
+COBJS   := source/main.o source/gba_dma.o source/gba.o source/gba_bg.o source/gba_sprites.o levels/level1/sprites/Ship.o levels/level1/Spacemap.o
 
 OBJS	:= $(COBJS)
 

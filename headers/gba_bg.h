@@ -30,8 +30,8 @@
 #define TEXTBG_SIZE_512x512 	0xC000
 
 //background memory offset macros
-#define CharBaseBlock(n) 		(((n)*0x4000)+0x6000000)
-#define ScreenBaseBlock(n) 		(((n)*0x800)+0x6000000)
+#define CHARBASEBLOCK(n) 		(((n)*0x4000)+0x6000000)
+#define SCREENBASEBLOCK(n) 		(((n)*0x800)+0x6000000)
 
 //Rotate background 
 #define ROTBG_SIZE_128x128 		0x0
@@ -39,20 +39,17 @@
 #define ROTBG_SIZE_512x512 		0x8000
 #define ROTBG_SIZE_1024x1024 	0xC000
 
-typedef struct Bg
+typedef struct Background
 {
-	u16* tileData;
-	u16* mapData;
 	u8 mosaic;
 	u8 colorMode;
 	u8 number;
 	u16 size;
 	u8 charBaseBlock;
 	u8 screenBaseBlock;
-	u8 wraparound;
 	s16 x_scroll,y_scroll;
-	s32 DX,DY;
-	s16 PA,PB,PC,PD;
-}Bg;
+}Background;
+
+extern void update_background(u16 x, u16 y);
 
 #endif
