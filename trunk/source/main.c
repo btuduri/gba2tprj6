@@ -1,3 +1,13 @@
+/**
+ * This file is the main source file for SpaceInvader.
+ * It initializes the screen, reads keys and starts
+ * the game loop.
+ *
+ * @date	11/12/09
+ * @author	Wouter van Teijlingen
+ * @email	wouter@0xff.nl
+ */
+ 
 #include "../headers/gba.h"				// GBA register definitions
 #include "../headers/dispcnt.h"			// REG_DISPCNT register #define
 #include "../headers/gba_sprites.h"		// generic sprite header file
@@ -6,14 +16,23 @@
 #include "../headers/gba_keypad.h"		// key header file
 #include "../headers/maps.h"			// maps header file
 
-// x en y scroll for map
-u16 x_scroll=150, y_scroll=120;
+/**
+ * space_ship is a struct that can be used to interact with
+ * the sprite in the OAM.
+ */
 Sprite space_ship;
 
+/**
+ * initializes the background and sprites on screen.
+ */
 void initialize_game() {
     u32 charbase 	= 0;
 	u32 screenbase 	= 28;	
 	u16* bg2map = (unsigned short *)SCREENBASEBLOCK(screenbase);	
+	
+	// position the scroll of the background
+	bg.x_scroll = 150;
+	bg.y_scroll = 120;	
 	
 	// start of spaceship
 	space_ship.x = 100;
@@ -23,7 +42,7 @@ void initialize_game() {
 	space_ship.OAMSpriteNum = 0;
 	space_ship.sprite_frame[0] = 0;
 	space_ship.sprite_frame[1] = 8;
-	space_ship.sprite_frame[2] = 64;	
+	space_ship.sprite_frame[2] = 32;	
 	
 	//configure background modi.
 	REG_BG2CNT = BG_COLOR256 | ROTBG_SIZE_512x512 |(charbase << CHAR_SHIFT) | (screenbase << SCREEN_SHIFT);
@@ -43,47 +62,56 @@ void initialize_game() {
 	initialize_sprites();
 	
   	sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
-	sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_64 | space_ship.x;				//size 64x64 and x-coord
+	sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;				//size 64x64 and x-coord
 	sprites[space_ship.OAMSpriteNum].attribute2 = 0;                      	//pointer to tile where sprite starts
 
-	for(loop = 0; loop < 2048; loop++)               	//load 1st sprite image data
+	for(loop = 0; loop < 512; loop++)               	//load 1st sprite image data
 		OAMData[loop] = ShipTiles[loop];
 }
 
+/**
+ * Function for handling the keys.
+ */
 void get_input() {
 
 	if(!(*KEYS & KEY_UP)) {
 		space_ship.active_frame = 0;
 		space_ship.y--;
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
-		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_64 | space_ship.x;		//size 64x64 and x-coord		
-		y_scroll -= 4;
+		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;		//size 64x64 and x-coord		
+		bg.y_scroll -= 4;
 
 	}
 	if(!(*KEYS & KEY_DOWN)) {
 		space_ship.y++;
  		space_ship.active_frame = 0;
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
-		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_64 | space_ship.x;			
-		y_scroll += 4;
+		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
+		bg.y_scroll += 4;
 	}	
 	if(!(*KEYS & KEY_RIGHT)) {
 		space_ship.x++;
  		space_ship.active_frame = 0;
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
-		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_64 | space_ship.x;	
-		x_scroll += 4;
+		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;	
+		bg.x_scroll += 4;
 	}
 	if(!(*KEYS & KEY_LEFT)) {
 		space_ship.x--;
  		space_ship.active_frame = 0;
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
-		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_64 | space_ship.x;			
-		x_scroll -= 4;
+		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
+		bg.x_scroll -= 4;
 	}	
 }
 
-int main(void) {
+
+/**
+ * The main game loop.
+ *
+ * @return the exit status.
+ */
+int main() {
 
 	initialize_game();
 
@@ -91,7 +119,7 @@ int main(void) {
 		get_input();
 		wait_for_vsync();
 		copy_oam();
-		update_background(x_scroll, y_scroll);
+		update_background();
 	}
 
 	return 0;

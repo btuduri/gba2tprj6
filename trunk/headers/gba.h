@@ -1,9 +1,12 @@
-//////////////////////////////////////////////////////////////////////////
-// File: 	gba.h                                             	//
-// Description: Contains all the GBA register definitions	 	//
-// Author:	Eloist						  	//
-// Date: 	9th January 2002                                      	//
-//////////////////////////////////////////////////////////////////////////
+/**
+ * Contains all the relevant defines for the GBA device.
+ *
+ * @date	11/12/09
+ * @author	Eloist
+ * @author  Wouter van Teijlingen
+ * @email	wouter@0xff.nl
+ */
+ 
 #ifndef GBA_HEADER
 #define GBA_HEADER
 

@@ -3,12 +3,12 @@
 
 //======================================================================
 //
-//	Ship, 64x64@8, 
+//	Ship, 32x32@8, 
 //	+ palette 256 entries, not compressed
-//	+ 64 tiles not compressed
-//	Total size: 512 + 4096 = 4608
+//	+ 16 tiles not compressed
+//	Total size: 512 + 1024 = 1536
 //
-//	Time-stamp: 2009-12-05, 15:01:17
+//	Time-stamp: 2009-12-06, 15:28:31
 //	Exported by Cearn's GBA Image Transmogrifier, v0.8.3
 //	( http://www.coranac.com/projects/#grit )
 //
@@ -17,8 +17,8 @@
 #ifndef GRIT_SHIP_H
 #define GRIT_SHIP_H
 
-#define ShipTilesLen 4096
-extern const unsigned short ShipTiles[2048];
+#define ShipTilesLen 1024
+extern const unsigned short ShipTiles[512];
 
 #define ShipPalLen 512
 extern const unsigned short ShipPal[256];

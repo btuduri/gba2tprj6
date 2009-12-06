@@ -1,3 +1,11 @@
+/**
+ * This file contains functions to control the background image.
+ *
+ * @date	11/12/09
+ * @author	Wouter van Teijlingen
+ * @email	wouter@0xff.nl
+ */
+
 #include "../headers/gba.h"
 
 u32* OAMmem  		=(u32*)0x7000000;
