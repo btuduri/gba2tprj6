@@ -78,8 +78,8 @@ typedef struct
 {
 	u16 x;			//x and y position on screen
 	u16 y;
-	u16 sprite_frame[3];     //animation frame storage
-	int active_frame;        //which frame is active
+	//u16 sprite_frame[3];     //animation frame storage
+	//int active_frame;        //which frame is active
 	u16 OAMSpriteNum;       //which sprite referring to
 } Sprite;
 
