@@ -35,9 +35,12 @@ void initialize_menu() {
 	
 		if( !(*KEYS & KEY_A) ) {
 		
-			return 1;
+			// Break out loop when A is pressed
+			break;
 		
 		}
+		
+		wait_for_vsync();
 	
 	}
 
@@ -138,11 +141,7 @@ void get_input() {
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
 		bg.x_scroll -= 4;
 	}	
-	
-	if(!(*KEYS & KEY_A)) {
-		initialize_menu();
-	}
-	
+
 }
 
 
@@ -153,7 +152,7 @@ void get_input() {
  */
 int main() {
 
-	//initialize_menu();
+	initialize_menu();
 	initialize_game();
 
 	while(1) {
