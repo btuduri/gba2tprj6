@@ -7,13 +7,16 @@
  * @author	Wouter van Teijlingen, Wesley Hilhorst
  * @email	wouter@0xff.nl, wesley.hilhorst@gmail.com
  */
- 
+
+#include <stdio.h>
+#include <stdlib.h>
 #include "../headers/gba.h"				// GBA register definitions
 #include "../headers/dispcnt.h"			// REG_DISPCNT register #define
 #include "../headers/gba_sprites.h"		// generic sprite header file
 #include "../headers/gba_bg.h"			// generic background header file
 #include "../headers/gba_dma.h"			// DMA register definitions
 #include "../headers/gba_keypad.h"		// key header file
+#include "../headers/gba_sram.h"		// sram header file
 #include "../headers/maps.h"			// maps header file
 #include "../headers/menus.h"			// menus header file
 
@@ -24,16 +27,18 @@
 Sprite space_ship, UFO;
 
 
-void initialize_menu() {
+/**
+ * initializes the startmenu on screen
+ */
+void initialize_startscreen() {
 
 	SET_MODE( MODE_3 | BG2_ENABLE ); 
 	
 	dma_fast_copy((void*)StartscreenBitmap, (void*)VideoBuffer, 235020, DMA_16NOW); 
-	wait_for_vsync();
 	
     while(1) {
 	
-		if( !(*KEYS & KEY_A) ) {
+		if( !(*KEYS & KEY_START) ) {
 		
 			// Break out loop when A is pressed
 			break;
@@ -103,6 +108,7 @@ void initialize_game() {
 		OAMData[loop] = UFOTiles[loop-512];		
 }
 
+
 /**
  * Function for handling the keys.
  */
@@ -140,7 +146,32 @@ void get_input() {
 		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
 		bg.x_scroll -= 4;
-	}	
+	}
+	
+
+	/////////////////////////////////
+	// Save/Load on SRAM testing   //
+	/////////////////////////////////
+	
+	if(!(*KEYS & KEY_A)) {
+		SaveInt(0,space_ship.x);	// Save Ship X
+		SaveInt(10,space_ship.y);	// Save Ship Y
+		SaveInt(20,bg.x_scroll);	// Save BG X
+		SaveInt(30,bg.y_scroll);	// Save BG Y
+	}
+	
+	if(!(*KEYS & KEY_B)) {
+		space_ship.x = LoadInt(0);	// Load Ship X
+		space_ship.y = LoadInt(10);	// Load Ship Y
+		
+		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
+		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;	
+		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
+		
+		bg.x_scroll = LoadInt(20);	// Load BG X
+		bg.y_scroll = LoadInt(30);	// Load BG Y
+	}
+	
 
 }
 
@@ -152,7 +183,7 @@ void get_input() {
  */
 int main() {
 
-	initialize_menu();
+	initialize_startscreen();
 	initialize_game();
 
 	while(1) {
