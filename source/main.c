@@ -4,8 +4,8 @@
  * the game loop.
  *
  * @date	11/12/09
- * @author	Wouter van Teijlingen
- * @email	wouter@0xff.nl
+ * @author	Wouter van Teijlingen, Wesley Hilhorst
+ * @email	wouter@0xff.nl, wesley.hilhorst@gmail.com
  */
  
 #include "../headers/gba.h"				// GBA register definitions
@@ -15,12 +15,34 @@
 #include "../headers/gba_dma.h"			// DMA register definitions
 #include "../headers/gba_keypad.h"		// key header file
 #include "../headers/maps.h"			// maps header file
+#include "../headers/menus.h"			// menus header file
 
 /**
  * space_ship is a struct that can be used to interact with
  * the sprite in the OAM.
  */
 Sprite space_ship, UFO;
+
+
+void initialize_menu() {
+
+	SET_MODE( MODE_3 | BG2_ENABLE ); 
+	
+	dma_fast_copy((void*)StartscreenBitmap, (void*)VideoBuffer, 235020, DMA_16NOW); 
+	wait_for_vsync();
+	
+    while(1) {
+	
+		if( !(*KEYS & KEY_A) ) {
+		
+			return 1;
+		
+		}
+	
+	}
+
+}
+
 
 /**
  * initializes the background and sprites on screen.
@@ -47,8 +69,8 @@ void initialize_game() {
 	UFO.OAMSpriteNum = 1;
 
 	//configure background modi.
+	SET_MODE( MODE_2 | BG2_ENABLE | OBJ_ENABLE | OBJ_MAP_1D ); //set mode 2 and enable sprites and 1d mapping
 	REG_BG2CNT = BG_COLOR256 | ROTBG_SIZE_512x512 |(charbase << CHAR_SHIFT) | (screenbase << SCREEN_SHIFT);
-	SET_MODE(MODE_2 | BG2_ENABLE | OBJ_ENABLE | OBJ_MAP_1D); //set mode 2 and enable sprites and 1d mapping
 
 	//Copy background palette into memory
 	dma_fast_copy((void*)SpacemapPal, (void*)BGPaletteMem, 256, DMA_16NOW);
@@ -116,6 +138,11 @@ void get_input() {
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
 		bg.x_scroll -= 4;
 	}	
+	
+	if(!(*KEYS & KEY_A)) {
+		initialize_menu();
+	}
+	
 }
 
 
@@ -126,6 +153,7 @@ void get_input() {
  */
 int main() {
 
+	//initialize_menu();
 	initialize_game();
 
 	while(1) {
