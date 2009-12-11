@@ -29,23 +29,12 @@ Sprite space_ship, UFO;
  * initializes the startmenu on screen
  */
 void initialize_startscreen() {
-
 	SET_MODE( MODE_3 | BG2_ENABLE ); 
 	
-	dma_fast_copy((void*)StartscreenBitmap, (void*)VideoBuffer, 235010, DMA_16NOW); 
+	dma_fast_copy((void*)StartscreenBitmap, (void*)VideoBuffer, StartscreenBitmapLen / 2, DMA_16NOW); 
 	
-    while(1) {
-	
-		if( !(*KEYS & KEY_START) ) {
-		
-			// Break out loop when A is pressed
-			break;
-		
-		}
-		
+    while((*KEYS & KEY_START))
 		wait_for_vsync();
-	
-	}
 
 }
 
@@ -79,11 +68,11 @@ void initialize_game() {
 	REG_BG2CNT = BG_COLOR256 | ROTBG_SIZE_512x512 |(charbase << CHAR_SHIFT) | (screenbase << SCREEN_SHIFT);
 
 	//Copy background palette into memory
-	dma_fast_copy((void*)SpacemapPal, (void*)BGPaletteMem, 256, DMA_16NOW);
+	dma_fast_copy((void*)SpacemapPal, (void*)BGPaletteMem, SpacemapPalLen / 2, DMA_16NOW);
 	//set the tile images
-	dma_fast_copy((void*)SpacemapTiles, (void*)CHARBASEBLOCK(charbase), 2592, DMA_32NOW);
+	dma_fast_copy((void*)SpacemapTiles, (void*)CHARBASEBLOCK(charbase), SpacemapTilesLen / 2, DMA_32NOW);
 	//copy the tile map into background 2
-	dma_fast_copy((void*)SpacemapMap, (void*)bg2map, 64*64/2, DMA_32NOW);
+	dma_fast_copy((void*)SpacemapMap, (void*)bg2map, SpacemapMapLen / 2, DMA_32NOW);
 	
 	u16 loop;
 	for(loop = 0; loop < 256; loop++)          //load the palette into memory
@@ -153,28 +142,27 @@ void get_input() {
 	/////////////////////////////////
 	
 	if(!(*KEYS & KEY_A)) {
-		eraseSRAM( 40 ); // Erase 40 chars
+		erase_SRAM( 40 ); // Erase 40 chars
 	
-		SaveInt(0,space_ship.x);	// Save Ship X
-		SaveInt(10,space_ship.y);	// Save Ship Y
-		SaveInt(20,bg.x_scroll);	// Save BG X
-		SaveInt(30,bg.y_scroll);	// Save BG Y
+		save_int(0,space_ship.x);	// Save Ship X
+		save_int(10,space_ship.y);	// Save Ship Y
+		save_int(20,bg.x_scroll);	// Save BG X
+		save_int(30,bg.y_scroll);	// Save BG Y
 	}
 	if(!(*KEYS & KEY_B)) {
-		space_ship.x = LoadInt(0);	// Load Ship X
-		space_ship.y = LoadInt(10);	// Load Ship Y
+		space_ship.x = load_int(0);	// Load Ship X
+		space_ship.y = load_int(10);	// Load Ship Y
 		
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
 		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
 		
-		bg.x_scroll = LoadInt(20);	// Load BG X
-		bg.y_scroll = LoadInt(30);	// Load BG Y
+		bg.x_scroll = load_int(20);	// Load BG X
+		bg.y_scroll = load_int(30);	// Load BG Y
 	}
 	
 
 }
-
 
 /**
  * The main game loop.
@@ -182,7 +170,6 @@ void get_input() {
  * @return the exit status.
  */
 int main() {
-
 	initialize_startscreen();
 	initialize_game();
 

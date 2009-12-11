@@ -15,7 +15,7 @@
 /**
  * Function to save int on a specific offset
  */
-void SaveInt( u16 offset, int value ) 
+void save_int( u16 offset, int value ) 
 {
 	int i;
 	char string[10];
@@ -37,7 +37,7 @@ void SaveInt( u16 offset, int value )
 /**
  * Function to load int from a specific offset
  */
-int LoadInt( u16 offset ) {
+int load_int( u16 offset ) {
 
 	int  i;
 	char string[10];
@@ -56,7 +56,7 @@ int LoadInt( u16 offset ) {
 /**
  * Function to erase the first x lines in the save data
  */
-void eraseSRAM( int length ) {
+void erase_SRAM( int length ) {
 
 	int i;
 	for(i=0; i < length; i++) {
