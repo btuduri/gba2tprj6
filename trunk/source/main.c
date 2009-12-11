@@ -8,8 +8,6 @@
  * @email	wouter@0xff.nl, wesley.hilhorst@gmail.com
  */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "../headers/gba.h"				// GBA register definitions
 #include "../headers/dispcnt.h"			// REG_DISPCNT register #define
 #include "../headers/gba_sprites.h"		// generic sprite header file
@@ -34,7 +32,7 @@ void initialize_startscreen() {
 
 	SET_MODE( MODE_3 | BG2_ENABLE ); 
 	
-	dma_fast_copy((void*)StartscreenBitmap, (void*)VideoBuffer, 235020, DMA_16NOW); 
+	dma_fast_copy((void*)StartscreenBitmap, (void*)VideoBuffer, 235010, DMA_16NOW); 
 	
     while(1) {
 	
@@ -62,7 +60,7 @@ void initialize_game() {
 	
 	// position the scroll of the background
 	bg.x_scroll = 150;
-	bg.y_scroll = 120;	
+	bg.y_scroll = 120;
 	
 	// start of spaceship
 	space_ship.x = 100;
@@ -105,7 +103,8 @@ void initialize_game() {
 		OAMData[loop] = ShipTiles[loop];	
 
 	for(loop = 512; loop < 1024; loop++)               	//load 1st sprite image data
-		OAMData[loop] = UFOTiles[loop-512];		
+		OAMData[loop] = UFOTiles[loop-512];
+		
 }
 
 
@@ -154,18 +153,19 @@ void get_input() {
 	/////////////////////////////////
 	
 	if(!(*KEYS & KEY_A)) {
+		eraseSRAM( 40 ); // Erase 40 chars
+	
 		SaveInt(0,space_ship.x);	// Save Ship X
 		SaveInt(10,space_ship.y);	// Save Ship Y
 		SaveInt(20,bg.x_scroll);	// Save BG X
 		SaveInt(30,bg.y_scroll);	// Save BG Y
 	}
-	
 	if(!(*KEYS & KEY_B)) {
 		space_ship.x = LoadInt(0);	// Load Ship X
 		space_ship.y = LoadInt(10);	// Load Ship Y
 		
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
-		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;	
+		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
 		
 		bg.x_scroll = LoadInt(20);	// Load BG X
