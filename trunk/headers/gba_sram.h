@@ -11,8 +11,8 @@
 
 #define SRAM 0xe000000	//32k SRAM = 0x0e000000 - 0x0e00ffff
 
-extern void eraseSRAM( int length );
-extern void SaveInt( u16 offset, int value );
-extern int LoadInt( u16 offset );
+extern void erase_SRAM( int length );
+extern void save_int( u16 offset, int value );
+extern int load_int( u16 offset );
 
 #endif
