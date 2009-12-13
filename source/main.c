@@ -18,12 +18,13 @@
 #include "../headers/maps.h"			// maps header file
 #include "../headers/menus.h"			// menus header file
 
-/**
- * space_ship is a struct that can be used to interact with
- * the sprite in the OAM.
- */
-Sprite space_ship, UFO;
 
+/**
+ * Usefull game vars
+ */
+signed int space_ship_movespeed;  
+Sprite space_ship, UFO;
+ 
 
 /**
  * initializes the startmenu on screen
@@ -81,17 +82,17 @@ void initialize_game() {
 	initialize_sprites();
 	
   	sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
-	sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;				//size 64x64 and x-coord
-	sprites[space_ship.OAMSpriteNum].attribute2 = 0;                      	//pointer to tile where sprite starts
+	sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;				//size 32x32 and x-coord
+	sprites[space_ship.OAMSpriteNum].attribute2 = 0;                      				//pointer to tile where sprite starts
 	
-  	sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;	//setup sprite info, 256 colour, shape and y-coord
-	sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;				//size 64x64 and x-coord
-	sprites[UFO.OAMSpriteNum].attribute2 = 32;     	
+  	sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;					//setup sprite info, 256 colour, shape and y-coord
+	sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;							//size 32x32 and x-coord
+	sprites[UFO.OAMSpriteNum].attribute2 = 32;     									//pointer to tile where sprite starts
 	
-	for(loop = 0; loop < 512; loop++)               	//load 1st sprite image data
+	for(loop = 0; loop < 512; loop++)              //load 1st sprite image data
 		OAMData[loop] = ShipTiles[loop];	
 
-	for(loop = 512; loop < 1024; loop++)               	//load 1st sprite image data
+	for(loop = 512; loop < 1024; loop++)           //load 1st sprite image data
 		OAMData[loop] = UFOTiles[loop-512];
 		
 }
@@ -102,38 +103,52 @@ void initialize_game() {
  */
 void get_input() {
 
-	if(!(*KEYS & KEY_UP)) {
+	if(!(*KEYS & KEY_A)) {
+		space_ship_movespeed = 2;
+	}
+	if((*KEYS & KEY_A)) {
+		space_ship_movespeed = 1;
+	}
+	if(!(*KEYS & KEY_UP)) {	
+		if( ( space_ship.y -= space_ship_movespeed ) <= 0 || space_ship.y > ( 160 - 32 ) )
+			space_ship.y = 0;
+		
 		//space_ship.active_frame = 0;
-		space_ship.y--;
-		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
-		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;		//size 64x64 and x-coord		
+		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
+		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
-		bg.y_scroll -= 4;
+		bg.y_scroll -= (space_ship_movespeed * 4);
 
 	}
 	if(!(*KEYS & KEY_DOWN)) {
-		space_ship.y++;
+		if( ( space_ship.y += space_ship_movespeed ) > ( 160 - 32 ) )
+			space_ship.y = ( 160 - 32 );
+		
  		//space_ship.active_frame = 0;
-		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
+		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
 		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
-		bg.y_scroll += 4;
+		bg.y_scroll += (space_ship_movespeed * 4);
 	}	
 	if(!(*KEYS & KEY_RIGHT)) {
-		space_ship.x++;
+		if( ( space_ship.x += space_ship_movespeed ) > ( 240 - 32 ) )
+			space_ship.x = ( 240 - 32 );
+		
  		//space_ship.active_frame = 0;
-		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
+		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
 		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;	
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
-		bg.x_scroll += 4;
+		bg.x_scroll += (space_ship_movespeed * 4);
 	}
 	if(!(*KEYS & KEY_LEFT)) {
-		space_ship.x--;
+		if( ( space_ship.x -= space_ship_movespeed ) < 0 || space_ship.x > ( 240 - 32 ) )
+			space_ship.x = 0;
+			
  		//space_ship.active_frame = 0;
-		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
+		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
 		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
-		bg.x_scroll -= 4;
+		bg.x_scroll -= (space_ship_movespeed * 4);
 	}
 	
 
@@ -141,28 +156,28 @@ void get_input() {
 	// Save/Load on SRAM testing   //
 	/////////////////////////////////
 	
-	if(!(*KEYS & KEY_A)) {
+	if(!(*KEYS & KEY_L)) {
 		erase_SRAM( 40 ); // Erase 40 chars
 	
-		save_int(0,space_ship.x);	// Save Ship X
-		save_int(10,space_ship.y);	// Save Ship Y
-		save_int(20,bg.x_scroll);	// Save BG X
-		save_int(30,bg.y_scroll);	// Save BG Y
+		save_int(0,space_ship.x);		// Save Ship X
+		save_int(10,space_ship.y);		// Save Ship Y
+		save_int(20,bg.x_scroll);		// Save BG X
+		save_int(30,bg.y_scroll);		// Save BG Y
 	}
-	if(!(*KEYS & KEY_B)) {
-		space_ship.x = load_int(0);	// Load Ship X
+	if(!(*KEYS & KEY_R)) {
+		space_ship.x = load_int(0);		// Load Ship X
 		space_ship.y = load_int(10);	// Load Ship Y
 		
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
 		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
 		
-		bg.x_scroll = load_int(20);	// Load BG X
-		bg.y_scroll = load_int(30);	// Load BG Y
+		bg.x_scroll = load_int(20);		// Load BG X
+		bg.y_scroll = load_int(30);		// Load BG Y
 	}
 	
-
 }
+
 
 /**
  * The main game loop.
