@@ -116,8 +116,10 @@ void get_input() {
 		//space_ship.active_frame = 0;
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
 		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;
-		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
-		bg.y_scroll -= (space_ship_movespeed * 4);
+		sprites[space_ship.OAMSpriteNum].attribute2 = 0;
+		
+		if (bg.y_scroll >= 5)
+			bg.y_scroll -= (space_ship_movespeed * 4);
 
 	}
 	if(!(*KEYS & KEY_DOWN)) {
@@ -128,7 +130,9 @@ void get_input() {
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
 		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
-		bg.y_scroll += (space_ship_movespeed * 4);
+		
+		if (bg.y_scroll <= 350)
+			bg.y_scroll += (space_ship_movespeed * 4);
 	}	
 	if(!(*KEYS & KEY_RIGHT)) {
 		if( ( space_ship.x += space_ship_movespeed ) > ( 240 - 32 ) )
@@ -138,7 +142,8 @@ void get_input() {
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
 		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;	
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
-		bg.x_scroll += (space_ship_movespeed * 4);
+		if (bg.x_scroll <= 260)
+			bg.x_scroll += (space_ship_movespeed * 4);
 	}
 	if(!(*KEYS & KEY_LEFT)) {
 		if( ( space_ship.x -= space_ship_movespeed ) < 0 || space_ship.x > ( 240 - 32 ) )
@@ -148,7 +153,9 @@ void get_input() {
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
 		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
-		bg.x_scroll -= (space_ship_movespeed * 4);
+		
+		if (bg.x_scroll >= 5)
+			bg.x_scroll -= (space_ship_movespeed * 4);
 	}
 	
 
@@ -178,6 +185,14 @@ void get_input() {
 	
 }
 
+/** 
+ * this function should update the appropriate sprites
+ * if score/health/et cetera changes.
+ *
+ * @note: to be implemented
+ */
+void update_score() {
+}
 
 /**
  * The main game loop.
@@ -191,6 +206,7 @@ int main() {
 	while(1) {
 		get_input();
 		wait_for_vsync();
+		update_score();
 		copy_oam();
 		update_background();
 	}
