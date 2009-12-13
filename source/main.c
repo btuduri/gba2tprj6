@@ -194,6 +194,22 @@ void get_input() {
 void update_score() {
 }
 
+
+/**
+ * this function handles the ai; spawning enemies, etc.
+ */
+void track_ai() {
+	UFO.y++;
+	if (UFO.y <= 0)
+		UFO.y = 160;
+	sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;
+
+	UFO.x--;
+	if (UFO.x <= 5)
+		UFO.x = 240;
+	sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;
+}
+
 /**
  * The main game loop.
  *
@@ -203,10 +219,12 @@ int main() {
 	initialize_startscreen();
 	initialize_game();
 
+	// game loop
 	while(1) {
 		get_input();
 		wait_for_vsync();
 		update_score();
+		track_ai();
 		copy_oam();
 		update_background();
 	}
