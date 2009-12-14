@@ -36,9 +36,45 @@ void initialize_startscreen() {
 	
     while((*KEYS & KEY_START))
 		wait_for_vsync();
+		
+	while(!(*KEYS & KEY_START))
+		wait_for_vsync();
 
 }
 
+
+/**
+ * initializes the pause mode
+ */
+ void initialize_pause() {
+	int x = bg.x_scroll;
+	int y = bg.y_scroll;
+ 
+	reset_background();
+ 	SET_MODE( MODE_3 | BG2_ENABLE ); 
+	
+	dma_fast_copy((void*)PausescreenBitmap, (void*)VideoBuffer, PausescreenBitmapLen / 2, DMA_16NOW); 
+
+	while((*KEYS & KEY_START))
+		wait_for_vsync();
+		
+	while(!(*KEYS & KEY_START))
+		wait_for_vsync();
+
+
+	while((*KEYS & KEY_START))
+		wait_for_vsync();
+		
+	while(!(*KEYS & KEY_START))
+		wait_for_vsync();
+		
+	initialize_game();
+	bg.x_scroll = x;
+	bg.y_scroll = y;
+	update_background();
+ 
+ }
+ 
 
 /**
  * initializes the background and sprites on screen.
@@ -106,6 +142,9 @@ void initialize_game() {
  */
 void get_input() {
 
+	if(!(*KEYS & KEY_START)) {
+		initialize_pause();
+	}
 	if(!(*KEYS & KEY_A)) {
 		space_ship_movespeed = 2;
 	}
@@ -250,6 +289,7 @@ void track_ai() {
 int main() {
 	initialize_startscreen();
 	initialize_game();
+
 
 	// game loop
 	while(1) {

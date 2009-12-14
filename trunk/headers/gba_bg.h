@@ -69,6 +69,7 @@ typedef struct Background
 }Background;
 
 extern void update_background();
+extern void reset_background();
 
 /**
  * declaration of struct to communicate with the background.
