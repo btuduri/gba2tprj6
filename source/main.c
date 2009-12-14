@@ -41,39 +41,6 @@ void initialize_startscreen() {
 		wait_for_vsync();
 
 }
-
-
-/**
- * initializes the pause mode
- */
- void initialize_pause() {
-	int x = bg.x_scroll;
-	int y = bg.y_scroll;
- 
-	reset_background();
- 	SET_MODE( MODE_3 | BG2_ENABLE ); 
-	
-	dma_fast_copy((void*)PausescreenBitmap, (void*)VideoBuffer, PausescreenBitmapLen / 2, DMA_16NOW); 
-
-	while((*KEYS & KEY_START))
-		wait_for_vsync();
-		
-	while(!(*KEYS & KEY_START))
-		wait_for_vsync();
-
-
-	while((*KEYS & KEY_START))
-		wait_for_vsync();
-		
-	while(!(*KEYS & KEY_START))
-		wait_for_vsync();
-		
-	initialize_game();
-	bg.x_scroll = x;
-	bg.y_scroll = y;
-	update_background();
- 
- }
  
 
 /**
@@ -135,6 +102,38 @@ void initialize_game() {
 	for(loop = 1024; loop < 1536; loop++)               	//load 1st sprite image data
 		OAMData[loop] = bulletTiles[loop-1024];		
 }
+
+/**
+ * initializes the pause mode
+ */
+ void initialize_pause() {
+	int x = bg.x_scroll;
+	int y = bg.y_scroll;
+ 
+	reset_background();
+ 	SET_MODE( MODE_3 | BG2_ENABLE ); 
+	
+	dma_fast_copy((void*)PausescreenBitmap, (void*)VideoBuffer, PausescreenBitmapLen / 2, DMA_16NOW); 
+
+	while((*KEYS & KEY_START))
+		wait_for_vsync();
+		
+	while(!(*KEYS & KEY_START))
+		wait_for_vsync();
+
+
+	while((*KEYS & KEY_START))
+		wait_for_vsync();
+		
+	while(!(*KEYS & KEY_START))
+		wait_for_vsync();
+		
+	initialize_game();
+	bg.x_scroll = x;
+	bg.y_scroll = y;
+	update_background();
+ 
+ }
 
 
 /**
