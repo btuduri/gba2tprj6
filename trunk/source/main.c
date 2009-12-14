@@ -96,6 +96,8 @@ void initialize_game() {
 	for(loop = 512; loop < 1024; loop++)           //load 1st sprite image data
 		OAMData[loop] = UFOTiles[loop-512];
 		
+	for(loop = 1024; loop < 1536; loop++)               	//load 1st sprite image data
+		OAMData[loop] = bulletTiles[loop-1024];		
 }
 
 
@@ -161,27 +163,25 @@ void get_input() {
 	if(!(*KEYS & KEY_A)) {
 		// start bullet
 		if(bullet.y >= 138){
+			bullet.y = -2;
+			bullet.x = -2;
+			
+			sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;	//setup sprite info, 256 colour, shape and y-coord
+			sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;				//size 64x64 and x-coord
+			sprites[bullet.OAMSpriteNum].attribute2 = 64; 	
+
 			bullet.x = space_ship.x + 3;
 			bullet.y = space_ship.y - 24;
 		}
-		sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;	//setup sprite info, 256 colour, shape and y-coord
-		sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;				//size 64x64 and x-coord
-		sprites[bullet.OAMSpriteNum].attribute2 = 64; 	
-		int loop;
-		for(loop = 1024; loop < 1536; loop++)               	//load 1st sprite image data
-			OAMData[loop] = bulletTiles[loop-1024];
+
 	}
+	
 	if(bullet.y >= 0){
 		bullet.y = bullet.y - 2;
 		sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;	//setup sprite info, 256 colour, shape and y-coord
 		sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;				//size 64x64 and x-coord
 		sprites[bullet.OAMSpriteNum].attribute2 = 64; 
 	}
-	if(	bullet.y+10 >= UFO.y && 
-		bullet.y-10 <= UFO.y &&
-		bullet.x+10 >= UFO.x && 
-		bullet.x-10 <= UFO.x
-	)initialize_game();
 	
 
 	/////////////////////////////////
