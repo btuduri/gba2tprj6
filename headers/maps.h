@@ -9,6 +9,7 @@
 #ifndef MAPS_HEADER
 #define MAPS_HEADER
 
+#include "../levels/level1/sprites/bullet.h" 
 #include "../levels/level1/sprites/Ship.h" 	// space_ship sprite
 #include "../levels/level1/sprites/UFO.h"
 #include "../levels/level1/map/Spacemap.h" 		// space map

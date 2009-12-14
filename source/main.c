@@ -23,7 +23,7 @@
  * Usefull game vars
  */
 signed int space_ship_movespeed;  
-Sprite space_ship, UFO;
+Sprite space_ship, UFO, bullet;
  
 
 /**
@@ -63,6 +63,7 @@ void initialize_game() {
 	// specify offsets and index of sprite in OAM array.
 	space_ship.OAMSpriteNum = 0;
 	UFO.OAMSpriteNum = 1;
+	bullet.OAMSpriteNum = 2;
 
 	//configure background modi.
 	SET_MODE( MODE_2 | BG2_ENABLE | OBJ_ENABLE | OBJ_MAP_1D ); //set mode 2 and enable sprites and 1d mapping
@@ -157,6 +158,30 @@ void get_input() {
 		if (bg.x_scroll >= 5)
 			bg.x_scroll -= (space_ship_movespeed * 4);
 	}
+	if(!(*KEYS & KEY_A)) {
+		// start bullet
+		if(bullet.y >= 138){
+			bullet.x = space_ship.x + 3;
+			bullet.y = space_ship.y - 24;
+		}
+		sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;	//setup sprite info, 256 colour, shape and y-coord
+		sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;				//size 64x64 and x-coord
+		sprites[bullet.OAMSpriteNum].attribute2 = 64; 	
+		int loop;
+		for(loop = 1024; loop < 1536; loop++)               	//load 1st sprite image data
+			OAMData[loop] = bulletTiles[loop-1024];
+	}
+	if(bullet.y >= 0){
+		bullet.y = bullet.y - 2;
+		sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;	//setup sprite info, 256 colour, shape and y-coord
+		sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;				//size 64x64 and x-coord
+		sprites[bullet.OAMSpriteNum].attribute2 = 64; 
+	}
+	if(	bullet.y+10 >= UFO.y && 
+		bullet.y-10 <= UFO.y &&
+		bullet.x+10 >= UFO.x && 
+		bullet.x-10 <= UFO.x
+	)initialize_game();
 	
 
 	/////////////////////////////////
