@@ -158,7 +158,7 @@ void get_input() {
 		if (bg.x_scroll >= 5)
 			bg.x_scroll -= (space_ship_movespeed * 4);
 	}
-	if(!(*KEYS & KEY_B)) {
+	if(!(*KEYS & KEY_A)) {
 		// start bullet
 		if(bullet.y >= 138){
 			bullet.x = space_ship.x + 3;
