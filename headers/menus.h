@@ -10,5 +10,6 @@
 #define MENUS_HEADER
 
 #include "../menus/startscreen.h" 	// Startscreen
+#include "../menus/Pausescreen.h" 	// Pausescreen
 
 #endif
