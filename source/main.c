@@ -54,7 +54,7 @@ void initialize_game() {
 	
 	// start of spaceship
 	space_ship.x = 100;
-	space_ship.y = 60;
+	space_ship.y = 1;
 	
 	// start of UFO
 	UFO.x = 180;
@@ -225,14 +225,21 @@ void update_score() {
  */
 void track_ai() {
 	UFO.y++;
-	if (UFO.y <= 0)
-		UFO.y = 160;
-	sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;
+    UFO.x--;
+	if (UFO.y >= 160 || UFO.x <= 0) {
+		UFO.y = -2;	
+		UFO.x = -2;
+		sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;
+		sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;	
+		sprites[UFO.OAMSpriteNum].attribute2 = 32; 
+		UFO.x = 180;
+		UFO.y = 1;    
+	} else{
 
-	UFO.x--;
-	if (UFO.x <= 5)
-		UFO.x = 240;
-	sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;
+        sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;
+        sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;
+        sprites[UFO.OAMSpriteNum].attribute2 = 32;       
+    }
 }
 
 /**
@@ -247,9 +254,9 @@ int main() {
 	// game loop
 	while(1) {
 		get_input();
+		track_ai();
 		wait_for_vsync();
 		update_score();
-		track_ai();
 		copy_oam();
 		update_background();
 	}
