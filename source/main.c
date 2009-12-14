@@ -224,8 +224,8 @@ void update_score() {
  * this function handles the ai; spawning enemies, etc.
  */
 void track_ai() {
-	UFO.y++;
-    UFO.x--;
+	UFO.y = space_ship.y - 4;
+    UFO.x = space_ship.x + 30;
 	if (UFO.y >= 160 || UFO.x <= 0) {
 		UFO.y = -2;	
 		UFO.x = -2;
