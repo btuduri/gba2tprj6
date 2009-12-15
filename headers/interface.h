@@ -1,5 +1,5 @@
 /**
- * Defines for the functions used for the game score
+ * Defines for the functions used for the game interface
  *
  * @date	11/12/09
  * @author  Wesley Hilhorst
@@ -21,6 +21,8 @@
 #include "../interface/text_8.h"
 #include "../interface/text_9.h"
 #include "../interface/text_0.h"
+
+/* @ note : Dont set sprites on higher numbers then 50 @ */
 
 // Main userinterface init function
 extern void initialize_interface();

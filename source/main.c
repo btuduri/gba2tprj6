@@ -76,14 +76,14 @@ void initialize_game() {
 	UFO.y = 30;
 	
 	// specify offsets and index of sprite in OAM array.
-	space_ship.OAMSpriteNum = 40;
-	UFO.OAMSpriteNum = 41;
-	bullet.OAMSpriteNum = 42;
+	space_ship.OAMSpriteNum = 0;
+	UFO.OAMSpriteNum = 1;
+	bullet.OAMSpriteNum = 2;
 	
 	u16 loop;
 	for(loop = 0; loop < 256; loop++)          //load the palette into memory
 		OBJPaletteMem[loop] = ShipPal[loop];				
-
+	
 	//initialize the sprites
 	initialize_sprites();
 	

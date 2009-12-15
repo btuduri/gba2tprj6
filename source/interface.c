@@ -11,7 +11,7 @@
 #include "../headers/gba_sprites.h"
 #include "../headers/interface.h"
 
-int segment_1, segment_2, segment_3, segment_4, ship_health;
+int segment_1, segment_2, segment_3, segment_4, ship_health, ship_maxhealth;
 Sprite score_1, score_2, score_3, score_4;
 
 
@@ -19,6 +19,9 @@ Sprite score_1, score_2, score_3, score_4;
  * Load all score interface tiles into memory
  */
 void initialize_interface() {
+
+	// Set max health
+	ship_maxhealth = 5;
 
 	u16 loop;
 
@@ -62,14 +65,14 @@ void initialize_interface() {
 	for(loop = 31232; loop < 31744; loop++)
 		OAMData[loop] = healthbarTiles[loop-31232];
 		
-	// Interface sprite numbers
-	score_1.OAMSpriteNum = 10;
-	score_2.OAMSpriteNum = 11;
-	score_3.OAMSpriteNum = 12;
-	score_4.OAMSpriteNum = 13;
+	// Score sprite numbers from 62 to 65
+	score_1.OAMSpriteNum = 62;
+	score_2.OAMSpriteNum = 63;
+	score_3.OAMSpriteNum = 64;
+	score_4.OAMSpriteNum = 65;
 	
 	// Interface background sprite numbers genereren
-	int bg_sprites = 20;
+	int bg_sprites = 66 + ship_maxhealth;
 	for( loop = bg_sprites; loop < (bg_sprites+8); loop++ )
 		{
 	
@@ -78,7 +81,6 @@ void initialize_interface() {
 		sprites[loop].attribute2 = 1920; 
 		
 	}
-		
 	
 	// Set current score on 0000
 	set_score( 0000 );
@@ -148,13 +150,12 @@ int get_score() {
 	
 	int x, y;	
 	int shiftright = 5;
-	int maxhp = 5;
 	
-	if( hp > maxhp || hp < 0)
+	if( hp > ship_maxhealth || hp < 0)
 		hp = 1;	
 	
 	int loop;
-	for( loop = 0; loop < maxhp; loop++ ) {
+	for( loop = 0; loop < ship_maxhealth; loop++ ) {
 	
 		y = 128;
 		x = (loop * 17) + shiftright;
@@ -164,9 +165,9 @@ int get_score() {
 			x = -2;
 		}
 	
-		sprites[loop+14].attribute0 = COLOR_256 | SQUARE | y;
-		sprites[loop+14].attribute1 = SIZE_32 | x;
-		sprites[loop+14].attribute2 = 1952; 
+		sprites[loop+66].attribute0 = COLOR_256 | SQUARE | y;
+		sprites[loop+66].attribute1 = SIZE_32 | x;
+		sprites[loop+66].attribute2 = 1952; 
 		
 	}
  
