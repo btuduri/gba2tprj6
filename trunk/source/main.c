@@ -77,10 +77,9 @@ void initialize_game() {
 	UFO.y = 30;
 	
 	// specify offsets and index of sprite in OAM array.
-	space_ship.OAMSpriteNum = 0;
-	UFO.OAMSpriteNum = 1;
-	bullet.OAMSpriteNum = 2;
-	
+	space_ship.OAMSpriteNum = 10;
+	UFO.OAMSpriteNum = 11;
+	bullet.OAMSpriteNum = 12;
 	
 	u16 loop;
 	for(loop = 0; loop < 256; loop++)          //load the palette into memory
@@ -264,6 +263,8 @@ void get_input() {
 void track_ai() {
 	UFO.y = rand() % 160;
     UFO.x = rand() % 240;
+	UFO.y = space_ship.y;
+	UFO.x = space_ship.x;
 	if (UFO.y >= 160 || UFO.x <= 0) {
 		UFO.y = -2;	
 		UFO.x = -2;
