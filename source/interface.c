@@ -86,10 +86,10 @@ void set_score( int score ) {
 	score_4.x = 214;
 	score_4.y = 135;
 	
-	score_1.OAMSpriteNum = 50;
-	score_2.OAMSpriteNum = 51;
-	score_3.OAMSpriteNum = 52;
-	score_4.OAMSpriteNum = 53;
+	score_1.OAMSpriteNum = 0;
+	score_2.OAMSpriteNum = 1;
+	score_3.OAMSpriteNum = 2;
+	score_4.OAMSpriteNum = 3;
 	
 	sprites[score_1.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | score_1.y;					//setup sprite info, 256 colour, shape and y-coord
 	sprites[score_1.OAMSpriteNum].attribute1 = SIZE_32 | score_1.x;							//size 32x32 and x-coord

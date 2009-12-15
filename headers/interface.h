@@ -9,20 +9,16 @@
 #ifndef INTERFACE_HEADER
 #define INTERFACE_HEADER
 
-#include "../text/text_1.h"
-#include "../text/text_2.h"
-#include "../text/text_3.h"
-#include "../text/text_4.h"
-#include "../text/text_5.h"
-#include "../text/text_6.h"
-#include "../text/text_7.h"
-#include "../text/text_8.h"
-#include "../text/text_9.h"
-#include "../text/text_0.h"
-
-extern int segment_1, segment_2, segment_3, segment_4;
-extern Sprite score_1, score_2;
-
+#include "../interface/text_1.h"
+#include "../interface/text_2.h"
+#include "../interface/text_3.h"
+#include "../interface/text_4.h"
+#include "../interface/text_5.h"
+#include "../interface/text_6.h"
+#include "../interface/text_7.h"
+#include "../interface/text_8.h"
+#include "../interface/text_9.h"
+#include "../interface/text_0.h"
 
 // Main userinterface init function
 extern void initialize_interface();
