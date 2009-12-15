@@ -20,9 +20,9 @@ Sprite score_1, score_2, score_3, score_4;
  */
 void initialize_interface() {
 
-	// Load tiles on 50th-59th place
-	int loop;
+	u16 loop;
 
+	// Load score tiles on 50th-59th place
 	for(loop = 25600; loop < 26112; loop++)
 		OAMData[loop] = text_0Tiles[loop-25600];		
 	  	
@@ -52,6 +52,33 @@ void initialize_interface() {
 		
 	for(loop = 30208; loop < 30720; loop++)
 		OAMData[loop] = text_9Tiles[loop-30208];
+		
+	
+	// Load background tiles on 60th
+	for(loop = 30720; loop < 31232; loop++)
+		OAMData[loop] = interfacebgTiles[loop-30720];
+		
+	// Load healthbar tiles on 61th
+	for(loop = 31232; loop < 31744; loop++)
+		OAMData[loop] = healthbarTiles[loop-31232];
+		
+	// Interface sprite numbers
+	score_1.OAMSpriteNum = 10;
+	score_2.OAMSpriteNum = 11;
+	score_3.OAMSpriteNum = 12;
+	score_4.OAMSpriteNum = 13;
+	
+	// Interface background sprite numbers genereren
+	int bg_sprites = 20;
+	for( loop = bg_sprites; loop < (bg_sprites+8); loop++ )
+		{
+	
+		sprites[loop].attribute0 = COLOR_256 | SQUARE | 128;
+		sprites[loop].attribute1 = SIZE_32 | ((loop-bg_sprites) * 32);
+		sprites[loop].attribute2 = 1920; 
+		
+	}
+		
 	
 	// Set current score on 0000
 	set_score( 0000 );
@@ -86,11 +113,6 @@ void set_score( int score ) {
 	score_4.x = 214;
 	score_4.y = 135;
 	
-	score_1.OAMSpriteNum = 0;
-	score_2.OAMSpriteNum = 1;
-	score_3.OAMSpriteNum = 2;
-	score_4.OAMSpriteNum = 3;
-	
 	sprites[score_1.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | score_1.y;					//setup sprite info, 256 colour, shape and y-coord
 	sprites[score_1.OAMSpriteNum].attribute1 = SIZE_32 | score_1.x;							//size 32x32 and x-coord
 	sprites[score_1.OAMSpriteNum].attribute2 = 1600 + (segment_1 * 32); 
@@ -120,16 +142,39 @@ int get_score() {
 }
 
 /**
- * Set healthbar on a specific health 
+ * Set healthbar on a specific health (0-5)
  */
- void set_health( int health ) {
+ void set_health( int hp ) {
+	
+	int x, y;	
+	int maxhp = 5;
+	
+	if( hp > maxhp || hp < 0)
+		hp = 1;	
+	
+	int loop;
+	for( loop = 0; loop < maxhp; loop++ ) {
+	
+		y = 128;
+		x = (loop * 17);
+	
+		if( hp < loop ) {
+			y = -2;
+			x = -2;
+		}
+	
+		sprites[loop+14].attribute0 = COLOR_256 | SQUARE | y;
+		sprites[loop+14].attribute1 = SIZE_32 | x;
+		sprites[loop+14].attribute2 = 1952; 
+		
+	}
  
-	ship_health = health;
+	ship_health = hp;
  
  }
  
  /**
-  * Get current health (0-5)
+  * Get current health
   */
  int get_health() {
  

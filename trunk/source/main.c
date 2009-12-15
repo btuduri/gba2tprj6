@@ -77,9 +77,9 @@ void initialize_game() {
 	UFO.y = 30;
 	
 	// specify offsets and index of sprite in OAM array.
-	space_ship.OAMSpriteNum = 10;
-	UFO.OAMSpriteNum = 11;
-	bullet.OAMSpriteNum = 12;
+	space_ship.OAMSpriteNum = 40;
+	UFO.OAMSpriteNum = 41;
+	bullet.OAMSpriteNum = 42;
 	
 	u16 loop;
 	for(loop = 0; loop < 256; loop++)          //load the palette into memory
@@ -152,7 +152,10 @@ void get_input() {
 		initialize_pause();
 	}
 	if(!(*KEYS & KEY_A)) {
+		// Testing interface
 		set_score( get_score() + 1 );
+		set_health( get_health() + 1 );
+		
 		space_ship_movespeed = 2;
 	}
 	if((*KEYS & KEY_A)) {

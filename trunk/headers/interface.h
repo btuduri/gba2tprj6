@@ -9,6 +9,8 @@
 #ifndef INTERFACE_HEADER
 #define INTERFACE_HEADER
 
+#include "../interface/interfacebg.h"
+#include "../interface/healthbar.h"
 #include "../interface/text_1.h"
 #include "../interface/text_2.h"
 #include "../interface/text_3.h"
@@ -28,7 +30,7 @@ extern void set_score( int score );
 extern int get_score();
 
 // Health
-extern void set_health( int health );
+extern void set_health( int hp );
 extern int get_health();
 
 #endif
