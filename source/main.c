@@ -8,6 +8,7 @@
  * @email	wouter@0xff.nl, wesley.hilhorst@gmail.com
  */
 
+#include <stdlib.h>
 #include "../headers/gba.h"				// GBA register definitions
 #include "../headers/dispcnt.h"			// REG_DISPCNT register #define
 #include "../headers/gba_sprites.h"		// generic sprite header file
@@ -17,6 +18,7 @@
 #include "../headers/gba_sram.h"		// sram header file
 #include "../headers/maps.h"			// maps header file
 #include "../headers/menus.h"			// menus header file
+#include "../headers/interface.h"		// interface header file
 
 
 /**
@@ -55,19 +57,6 @@ void initialize_game() {
 	bg.x_scroll = 150;
 	bg.y_scroll = 120;
 	
-	// start of spaceship
-	space_ship.x = 100;
-	space_ship.y = 1;
-	
-	// start of UFO
-	UFO.x = 180;
-	UFO.y = 30;
-	
-	// specify offsets and index of sprite in OAM array.
-	space_ship.OAMSpriteNum = 0;
-	UFO.OAMSpriteNum = 1;
-	bullet.OAMSpriteNum = 2;
-
 	//configure background modi.
 	SET_MODE( MODE_2 | BG2_ENABLE | OBJ_ENABLE | OBJ_MAP_1D ); //set mode 2 and enable sprites and 1d mapping
 	REG_BG2CNT = BG_COLOR256 | ROTBG_SIZE_512x512 |(charbase << CHAR_SHIFT) | (screenbase << SCREEN_SHIFT);
@@ -79,11 +68,29 @@ void initialize_game() {
 	//copy the tile map into background 2
 	dma_fast_copy((void*)SpacemapMap, (void*)bg2map, SpacemapMapLen / 2, DMA_32NOW);
 	
+	// start of spaceship
+	space_ship.x = 100;
+	space_ship.y = 60;
+	
+	// start of UFO
+	UFO.x = 180;
+	UFO.y = 30;
+	
+	// specify offsets and index of sprite in OAM array.
+	space_ship.OAMSpriteNum = 0;
+	UFO.OAMSpriteNum = 1;
+	bullet.OAMSpriteNum = 2;
+	
+	
 	u16 loop;
 	for(loop = 0; loop < 256; loop++)          //load the palette into memory
 		OBJPaletteMem[loop] = ShipPal[loop];				
 
+	//initialize the sprites
 	initialize_sprites();
+	
+	//initialize the userinterface for score and health
+	initialize_interface();
 	
   	sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
 	sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;				//size 32x32 and x-coord
@@ -93,20 +100,21 @@ void initialize_game() {
 	sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;							//size 32x32 and x-coord
 	sprites[UFO.OAMSpriteNum].attribute2 = 32;     									//pointer to tile where sprite starts
 	
-	for(loop = 0; loop < 512; loop++)              //load 1st sprite image data
+	for(loop = 0; loop < 512; loop++)				//load 1st sprite image data
 		OAMData[loop] = ShipTiles[loop];	
 
-	for(loop = 512; loop < 1024; loop++)           //load 1st sprite image data
+	for(loop = 512; loop < 1024; loop++)			//load 2st sprite image data
 		OAMData[loop] = UFOTiles[loop-512];
 		
-	for(loop = 1024; loop < 1536; loop++)               	//load 1st sprite image data
-		OAMData[loop] = bulletTiles[loop-1024];		
+	for(loop = 1024; loop < 1536; loop++)			//load 3st sprite image data
+		OAMData[loop] = bulletTiles[loop-1024];
+		
 }
 
 /**
  * initializes the pause mode
  */
- void initialize_pause() {
+void initialize_pause() {
 	int x = bg.x_scroll;
 	int y = bg.y_scroll;
  
@@ -133,7 +141,7 @@ void initialize_game() {
 	bg.y_scroll = y;
 	update_background();
  
- }
+}
 
 
 /**
@@ -145,6 +153,7 @@ void get_input() {
 		initialize_pause();
 	}
 	if(!(*KEYS & KEY_A)) {
+		set_score( get_score() + 1 );
 		space_ship_movespeed = 2;
 	}
 	if((*KEYS & KEY_A)) {
@@ -204,8 +213,8 @@ void get_input() {
 			bullet.y = -2;
 			bullet.x = -2;
 			
-			sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;	//setup sprite info, 256 colour, shape and y-coord
-			sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;				//size 64x64 and x-coord
+			sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
+			sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
 			sprites[bullet.OAMSpriteNum].attribute2 = 64; 	
 
 			bullet.x = space_ship.x + 3;
@@ -216,8 +225,8 @@ void get_input() {
 	
 	if(bullet.y >= 0){
 		bullet.y = bullet.y - 2;
-		sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;	//setup sprite info, 256 colour, shape and y-coord
-		sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;				//size 64x64 and x-coord
+		sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
+		sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
 		sprites[bullet.OAMSpriteNum].attribute2 = 64; 
 	}
 	
@@ -227,7 +236,7 @@ void get_input() {
 	/////////////////////////////////
 	
 	if(!(*KEYS & KEY_L)) {
-		erase_SRAM( 40 ); // Erase 40 chars
+		erase_SRAM( 40 ); 				// Erase 40 chars
 	
 		save_int(0,space_ship.x);		// Save Ship X
 		save_int(10,space_ship.y);		// Save Ship Y
@@ -238,7 +247,7 @@ void get_input() {
 		space_ship.x = load_int(0);		// Load Ship X
 		space_ship.y = load_int(10);	// Load Ship Y
 		
-		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
+		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
 		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
 		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
 		
@@ -248,22 +257,13 @@ void get_input() {
 	
 }
 
-/** 
- * this function should update the appropriate sprites
- * if score/health/et cetera changes.
- *
- * @note: to be implemented
- */
-void update_score() {
-}
-
 
 /**
  * this function handles the ai; spawning enemies, etc.
  */
 void track_ai() {
-	UFO.y = space_ship.y - 4;
-    UFO.x = space_ship.x + 30;
+	UFO.y = rand() % 160;
+    UFO.x = rand() % 240;
 	if (UFO.y >= 160 || UFO.x <= 0) {
 		UFO.y = -2;	
 		UFO.x = -2;
@@ -289,13 +289,11 @@ int main() {
 	initialize_startscreen();
 	initialize_game();
 
-
-	// game loop
+	// Main game loop
 	while(1) {
 		get_input();
 		track_ai();
 		wait_for_vsync();
-		update_score();
 		copy_oam();
 		update_background();
 	}
