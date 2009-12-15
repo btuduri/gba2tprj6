@@ -8,7 +8,6 @@
  * @email	wouter@0xff.nl, wesley.hilhorst@gmail.com
  */
 
-#include <stdlib.h>
 #include "../headers/gba.h"				// GBA register definitions
 #include "../headers/dispcnt.h"			// REG_DISPCNT register #define
 #include "../headers/gba_sprites.h"		// generic sprite header file
@@ -55,7 +54,7 @@ void initialize_game() {
 	
 	// position the scroll of the background
 	bg.x_scroll = 150;
-	bg.y_scroll = 120;
+	bg.y_scroll = 220;
 	
 	//configure background modi.
 	SET_MODE( MODE_2 | BG2_ENABLE | OBJ_ENABLE | OBJ_MAP_1D ); //set mode 2 and enable sprites and 1d mapping
@@ -70,7 +69,7 @@ void initialize_game() {
 	
 	// start of spaceship
 	space_ship.x = 100;
-	space_ship.y = 60;
+	space_ship.y = 100;
 	
 	// start of UFO
 	UFO.x = 180;
@@ -116,7 +115,7 @@ void initialize_game() {
 void initialize_pause() {
 	int x = bg.x_scroll;
 	int y = bg.y_scroll;
- 
+	
 	reset_background();
  	SET_MODE( MODE_3 | BG2_ENABLE ); 
 	
@@ -175,8 +174,8 @@ void get_input() {
 
 	}
 	if(!(*KEYS & KEY_DOWN)) {
-		if( ( space_ship.y += space_ship_movespeed ) > ( 160 - 32 ) )
-			space_ship.y = ( 160 - 32 );
+		if( ( space_ship.y += space_ship_movespeed ) > ( 160 - 53 ) )
+			space_ship.y = ( 160 - 53 );
 		
  		//space_ship.active_frame = 0;
 		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
@@ -264,10 +263,6 @@ void get_input() {
  * this function handles the ai; spawning enemies, etc.
  */
 void track_ai() {
-	UFO.y = rand() % 160;
-    UFO.x = rand() % 240;
-	UFO.y = space_ship.y;
-	UFO.x = space_ship.x;
 	if (UFO.y >= 160 || UFO.x <= 0) {
 		UFO.y = -2;	
 		UFO.x = -2;
@@ -296,7 +291,7 @@ int main() {
 	// Main game loop
 	while(1) {
 		get_input();
-		track_ai();
+		//track_ai();
 		wait_for_vsync();
 		copy_oam();
 		update_background();
