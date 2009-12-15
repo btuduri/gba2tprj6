@@ -147,6 +147,7 @@ int get_score() {
  void set_health( int hp ) {
 	
 	int x, y;	
+	int shiftright = 5;
 	int maxhp = 5;
 	
 	if( hp > maxhp || hp < 0)
@@ -156,7 +157,7 @@ int get_score() {
 	for( loop = 0; loop < maxhp; loop++ ) {
 	
 		y = 128;
-		x = (loop * 17);
+		x = (loop * 17) + shiftright;
 	
 		if( hp < loop ) {
 			y = -2;
