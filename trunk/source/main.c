@@ -263,6 +263,9 @@ void get_input() {
  * this function handles the ai; spawning enemies, etc.
  */
 void track_ai() {
+	UFO.x--;
+	UFO.y--;
+
 	if (UFO.y >= 160 || UFO.x <= 0) {
 		UFO.y = -2;	
 		UFO.x = -2;
@@ -293,8 +296,8 @@ int main() {
 		get_input();
 		//track_ai();
 		wait_for_vsync();
-		copy_oam();
 		update_background();
+		copy_oam();
 	}
 
 	return 0;
