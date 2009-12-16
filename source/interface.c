@@ -21,7 +21,7 @@ Sprite score_1, score_2, score_3, score_4;
 void initialize_interface() {
 
 	// Set max health
-	ship_maxhealth = 5;
+	ship_maxhealth = 10;
 
 	u16 loop;
 
