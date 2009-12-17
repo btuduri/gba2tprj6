@@ -18,6 +18,7 @@
 #include "../headers/maps.h"			// maps header file
 #include "../headers/menus.h"			// menus header file
 #include "../headers/interface.h"		// interface header file
+#include "../headers/ai.h"				// interface header file
 
 
 /**
@@ -71,14 +72,9 @@ void initialize_game() {
 	space_ship.x = 100;
 	space_ship.y = 100;
 	
-	// start of UFO
-	UFO.x = 20;
-	UFO.y = 20;
-	
 	// specify offsets and index of sprite in OAM array.
 	space_ship.OAMSpriteNum = 0;
-	UFO.OAMSpriteNum = 1;
-	bullet.OAMSpriteNum = 2;
+
 	
 	u16 loop;
 	for(loop = 0; loop < 256; loop++)          //load the palette into memory
@@ -87,25 +83,17 @@ void initialize_game() {
 	//initialize the sprites
 	initialize_sprites();
 	
+	initialize_ai();
+	
 	//initialize the userinterface for score and health
 	initialize_interface();
 	
   	sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
 	sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;				//size 32x32 and x-coord
 	sprites[space_ship.OAMSpriteNum].attribute2 = 0;                      				//pointer to tile where sprite starts
-	
-  	sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;					//setup sprite info, 256 colour, shape and y-coord
-	sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;							//size 32x32 and x-coord
-	sprites[UFO.OAMSpriteNum].attribute2 = 32;     									//pointer to tile where sprite starts
-	
+		
 	for(loop = 0; loop < 512; loop++)				//load 1st sprite image data
 		OAMData[loop] = ShipTiles[loop];	
-
-	for(loop = 512; loop < 1024; loop++)			//load 2st sprite image data
-		OAMData[loop] = UFOTiles[loop-512];
-		
-	for(loop = 1024; loop < 1536; loop++)			//load 3st sprite image data
-		OAMData[loop] = bulletTiles[loop-1024];
 		
 }
 
@@ -209,19 +197,7 @@ void get_input() {
 			bg.x_scroll -= (space_ship_movespeed * 4);
 	}
 	if(!(*KEYS & KEY_B)) {
-		// start bullet
-		if(bullet.y >= 138){
-			bullet.y = -2;
-			bullet.x = -2;
-			
-			sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
-			sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
-			sprites[bullet.OAMSpriteNum].attribute2 = 64; 	
-
-			bullet.x = space_ship.x + 3;
-			bullet.y = space_ship.y - 24;
-		}
-
+		fire_bullet();
 	}
 	
 
@@ -252,70 +228,8 @@ void get_input() {
 }
 
 
-/**
- * this function handles the ai; spawning enemies, etc.
- */
-void track_ai() {
-/*	UFO.x--;
-	UFO.y--;
 
-	if (UFO.y >= 160 || UFO.x <= 0) {
-		UFO.y = -2;	
-		UFO.x = -2;
-		sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;
-		sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;	
-		sprites[UFO.OAMSpriteNum].attribute2 = 32; 
-		UFO.x = 180;
-		UFO.y = 1;    
-	} else{
 
-        sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;
-        sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;
-        sprites[UFO.OAMSpriteNum].attribute2 = 32;       
-    }*/
-	if(UFO.x >= 200){
-		UFO.x = 10;
-		UFO.y = UFO.y+20;
-	}
-	if((*KEYS & KEY_RIGHT))	
-		UFO.x++;
-	if(get_score()%20==0 && UFO.y!=20){
-		UFO.y=20;
-		UFO.x=20;
-	
-	}
-	if(UFO.y+20 >= space_ship.y && UFO.x+10 >= space_ship.x && UFO.x-10 <= space_ship.x){
-		set_health( get_health() - 1 );
-		UFO.y=20;
-		UFO.x=20;
-	}
-
-	
-	sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;
-    sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;
-    sprites[UFO.OAMSpriteNum].attribute2 = 32;   
-}
-/**
- * this function handles the bullet.
- */
-void track_bullet() {
-	if(bullet.y >= 0){
-		bullet.y = bullet.y - 2;
-		sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
-		sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
-		sprites[bullet.OAMSpriteNum].attribute2 = 64; 
-	}
-	if(bullet.x+10 >= UFO.x &&	bullet.x-10 <= UFO.x && bullet.y == UFO.y){
-			bullet.y = -2;
-			bullet.x = -2;
-			
-			sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
-			sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
-			sprites[bullet.OAMSpriteNum].attribute2 = 64; 	
-	
-			set_score( get_score() + 1 );
-	}
-}
 
 /**
  * The main game loop.
