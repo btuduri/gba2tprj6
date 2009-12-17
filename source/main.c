@@ -97,6 +97,7 @@ void initialize_game() {
 		
 }
 
+
 /**
  * initializes the pause mode
  */
@@ -229,64 +230,7 @@ void get_input() {
 }
 
 
-<<<<<<< .mine
-/**
- * this function handles the ai; spawning enemies, etc.
- */
-void track_ai() {
-=======
->>>>>>> .r58
-
-<<<<<<< .mine
-	if(UFO.x >= 200){
-		UFO.x = 10;
-		UFO.y = UFO.y+20;
-	}
-	if((*KEYS & KEY_RIGHT))	
-		UFO.x++;
-	if(get_score()%20==0 && UFO.y!=20){
-		UFO.y=20;
-		UFO.x=20;
-	
-	}
-	if(UFO.y+20 >= space_ship.y && UFO.x+10 >= space_ship.x && UFO.x-10 <= space_ship.x){
-		set_health( get_health() - 1 );
-		UFO.y=20;
-		UFO.x=20;
-	}
-=======
-
->>>>>>> .r58
-
-
-
-/**
-<<<<<<< .mine
- * this function handles the bullet.
- */
-void track_bullet() {
-	if(bullet.y >= 0){
-		bullet.y = bullet.y - 2;
-		sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
-		sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
-		sprites[bullet.OAMSpriteNum].attribute2 = 64; 
-	}
-	if(bullet.x+10 >= UFO.x &&	bullet.x-10 <= UFO.x && bullet.y == UFO.y){
-			bullet.y = -2;
-			bullet.x = -2;
-			
-			sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
-			sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
-			sprites[bullet.OAMSpriteNum].attribute2 = 64; 	
-	
-			set_score( get_score() + 1 );
-	}
-}
-
-
-/**
-=======
->>>>>>> .r58
+/*
  * The main game loop.
  *
  * @return the exit status.
