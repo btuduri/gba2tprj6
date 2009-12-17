@@ -72,8 +72,8 @@ void initialize_game() {
 	space_ship.y = 100;
 	
 	// start of UFO
-	UFO.x = 180;
-	UFO.y = 30;
+	UFO.x = 20;
+	UFO.y = 20;
 	
 	// specify offsets and index of sprite in OAM array.
 	space_ship.OAMSpriteNum = 0;
@@ -224,13 +224,6 @@ void get_input() {
 
 	}
 	
-	if(bullet.y >= 0){
-		bullet.y = bullet.y - 2;
-		sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
-		sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
-		sprites[bullet.OAMSpriteNum].attribute2 = 64; 
-	}
-	
 
 	/////////////////////////////////
 	// Save/Load on SRAM testing   //
@@ -263,7 +256,7 @@ void get_input() {
  * this function handles the ai; spawning enemies, etc.
  */
 void track_ai() {
-	UFO.x--;
+/*	UFO.x--;
 	UFO.y--;
 
 	if (UFO.y >= 160 || UFO.x <= 0) {
@@ -279,7 +272,49 @@ void track_ai() {
         sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;
         sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;
         sprites[UFO.OAMSpriteNum].attribute2 = 32;       
-    }
+    }*/
+	if(UFO.x >= 200){
+		UFO.x = 10;
+		UFO.y = UFO.y+20;
+	}
+	if((*KEYS & KEY_RIGHT))	
+		UFO.x++;
+	if(get_score()%20==0 && UFO.y!=20){
+		UFO.y=20;
+		UFO.x=20;
+	
+	}
+	if(UFO.y+20 >= space_ship.y && UFO.x+10 >= space_ship.x && UFO.x-10 <= space_ship.x){
+		set_health( get_health() - 1 );
+		UFO.y=20;
+		UFO.x=20;
+	}
+
+	
+	sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;
+    sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;
+    sprites[UFO.OAMSpriteNum].attribute2 = 32;   
+}
+/**
+ * this function handles the bullet.
+ */
+void track_bullet() {
+	if(bullet.y >= 0){
+		bullet.y = bullet.y - 2;
+		sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
+		sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
+		sprites[bullet.OAMSpriteNum].attribute2 = 64; 
+	}
+	if(bullet.x+10 >= UFO.x &&	bullet.x-10 <= UFO.x && bullet.y == UFO.y){
+			bullet.y = -2;
+			bullet.x = -2;
+			
+			sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
+			sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
+			sprites[bullet.OAMSpriteNum].attribute2 = 64; 	
+	
+			set_score( get_score() + 1 );
+	}
 }
 
 /**
@@ -294,7 +329,8 @@ int main() {
 	// Main game loop
 	while(1) {
 		get_input();
-		//track_ai();
+		track_ai();
+		track_bullet();
 		wait_for_vsync();
 		update_background();
 		copy_oam();
