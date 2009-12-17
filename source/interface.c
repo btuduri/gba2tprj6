@@ -7,11 +7,16 @@
  */
 
 
+#include <stdio.h>
+#include <stdlib.h>
 #include "../headers/gba.h"
 #include "../headers/gba_sprites.h"
+#include "../headers/gba_sram.h"
 #include "../headers/interface.h"
 
 int segment_1, segment_2, segment_3, segment_4, ship_health, ship_maxhealth;
+int highscores[11] = {0,0,0,0,0,0,0,0,0,0,0};
+
 Sprite score_1, score_2, score_3, score_4;
 
 
@@ -86,7 +91,10 @@ void initialize_interface() {
 	set_score( 0000 );
 	
 	// Set current health on max
-	set_health( 5 );
+	set_health( ship_maxhealth );
+	
+	// Load highscores
+	load_highscores();
 
 }
 
@@ -143,10 +151,11 @@ int get_score() {
 
 }
 
+
 /**
  * Set healthbar on a specific health (0-5)
  */
- void set_health( int hp ) {
+void set_health( int hp ) {
 	
 	int x, y;	
 	int shiftright = 5;
@@ -173,15 +182,58 @@ int get_score() {
  
 	ship_health = hp;
  
- }
+}
  
- /**
-  * Get current health
-  */
- int get_health() {
+ 
+/**
+ * Get current health
+ */
+int get_health() {
  
 	return ship_health;
  
+}
+ 
+ 
+int compare( const void * a, const void * b ) {
+    
+  return ( *(int*)a - *(int*)b );
+  
+}
+ 
+ 
+/**
+ * Load current scores
+ */
+void load_highscores() {
+ 
+	int i;
+	for( i = 0; i < 10; i++ ) {
+	
+		highscores[(10-i)] = load_int( i * 10 );
+	
+	}
+	
+}
+ 
+ 
+/**
+ * Save current score
+ */
+  
+ void save_highscore() {
+ 
+	highscores[10] = get_score();
+	qsort( highscores, 11, sizeof(int), compare );
+
+	erase_SRAM( 500 );
+
+	int i;
+	for( i = 1; i < 11; i++ ) {
+	
+		save_int( 10 * (i-1), highscores[i] );
+		
+	}
+
+ 
  }
- 
- 

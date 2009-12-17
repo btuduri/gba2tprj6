@@ -29,6 +29,8 @@ extern void initialize_interface();
 
 // Scores
 extern void set_score( int score );
+extern void load_highscores();
+extern void save_highscore();
 extern int get_score();
 
 // Health
