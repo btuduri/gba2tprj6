@@ -87,22 +87,23 @@ void initialize_game() {
 	
 	u16 loop;
 	for(loop = 0; loop < 256; loop++)          //load the palette into memory
-		OBJPaletteMem[loop] = ShipPal[loop];				
+		OBJPaletteMem[loop] = ShipPal[loop];					
+	
 	
 	//initialize the sprites
 	initialize_sprites();
 	
-	initialize_ai();
-	
 	//initialize the userinterface for score and health
-	initialize_interface();
+	initialize_interface();			
+	
+	initialize_ai();		
 	
   	sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
 	sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;				//size 32x32 and x-coord
 	sprites[space_ship.OAMSpriteNum].attribute2 = 0;                      				//pointer to tile where sprite starts
 		
 	for(loop = 0; loop < 512; loop++)				//load 1st sprite image data
-		OAMData[loop] = ShipTiles[loop];	
+		OAMData[loop] = ShipTiles[loop];		
 		
 }
 
@@ -154,8 +155,6 @@ void restore_from_pause() {
 	for(loop = 0; loop < 512; loop++)				//load 1st sprite image data
 		OAMData[loop] = ShipTiles[loop];
 		
-		
-	
 	set_score(map.score);
 	set_health(map.damage);
 	
@@ -188,7 +187,7 @@ void initialize_pause() {
 			}
 		}
 	}
-	
+	// restore background information
 	bg.x_scroll = x;
 	bg.y_scroll = y;	
 	restore_from_pause();
@@ -329,9 +328,8 @@ int main() {
 		track_ai();
 		track_bullet();
 		wait_for_vsync();
-		update_background();
 		copy_oam();
+		update_background();
 	}
-
 	return 0;
 }
