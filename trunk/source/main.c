@@ -26,6 +26,7 @@
  */
 signed int space_ship_movespeed;  
 Sprite space_ship, UFO, bullet;
+Map map;
  
 int start_status = 0;
 
@@ -63,6 +64,12 @@ void initialize_game() {
 	SET_MODE( MODE_2 | BG2_ENABLE | OBJ_ENABLE | OBJ_MAP_1D ); //set mode 2 and enable sprites and 1d mapping
 	REG_BG2CNT = BG_COLOR256 | ROTBG_SIZE_512x512 |(charbase << CHAR_SHIFT) | (screenbase << SCREEN_SHIFT);
 
+	// store pointers to import map information.
+	map.level_palette = (void *)SpacemapPal;
+	map.level_tiles = (void *)SpacemapTiles;
+	map.level_map = (void *)SpacemapMap;
+	
+
 	//Copy background palette into memory
 	dma_fast_copy((void*)SpacemapPal, (void*)BGPaletteMem, SpacemapPalLen / 2, DMA_16NOW);
 	//set the tile images
@@ -99,37 +106,92 @@ void initialize_game() {
 		
 }
 
+void restore_from_pause() {
+    u32 charbase 	= 0;
+	u32 screenbase 	= 28;	
+	u16* bg2map = (unsigned short *)SCREENBASEBLOCK(screenbase);	
+
+	//configure background modi.
+	SET_MODE( MODE_2 | BG2_ENABLE | OBJ_ENABLE | OBJ_MAP_1D ); //set mode 2 and enable sprites and 1d mapping
+	REG_BG2CNT = BG_COLOR256 | ROTBG_SIZE_512x512 |(charbase << CHAR_SHIFT) | (screenbase << SCREEN_SHIFT);
+
+	//Copy background palette into memory
+	dma_fast_copy((void*)SpacemapPal, (void*)BGPaletteMem, SpacemapPalLen / 2, DMA_16NOW);
+	//set the tile images
+	dma_fast_copy((void*)SpacemapTiles, (void*)CHARBASEBLOCK(charbase), SpacemapTilesLen / 2, DMA_32NOW);
+	//copy the tile map into background 2
+	dma_fast_copy((void*)SpacemapMap, (void*)bg2map, SpacemapMapLen / 2, DMA_32NOW);
+	
+	
+	u16 loop;
+	for(loop = 0; loop < 256; loop++)          //load the palette into memory
+		OBJPaletteMem[loop] = ShipPal[loop];				
+	
+  	sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;					//setup sprite info, 256 colour, shape and y-coord
+	sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;							//size 32x32 and x-coord
+	sprites[UFO.OAMSpriteNum].attribute2 = 32;     									//pointer to tile where sprite starts
+
+	
+	for(loop = 512; loop < 1024; loop++)			//load 2st sprite image data
+		OAMData[loop] = UFOTiles[loop-512];	
+	
+	for(loop = 1024; loop < 1536; loop++)			//load 3st sprite image data
+		OAMData[loop] = bulletTiles[loop-1024];
+	
+	
+	//initialize the sprites
+	initialize_sprites();
+	
+	//initialize_ai();
+	
+	//initialize the userinterface for score and health
+	initialize_interface();
+	
+  	sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
+	sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;				//size 32x32 and x-coord
+	sprites[space_ship.OAMSpriteNum].attribute2 = 0;                      				//pointer to tile where sprite starts
+		
+	for(loop = 0; loop < 512; loop++)				//load 1st sprite image data
+		OAMData[loop] = ShipTiles[loop];
+		
+		
+	
+	set_score(map.score);
+	set_health(map.damage);
+	
+	update_background();
+}
 
 /**
  * initializes the pause mode
  */
 void initialize_pause() {
+	u32 pause = 1;
 	int x = bg.x_scroll;
 	int y = bg.y_scroll;
-	
 	reset_background();
  	SET_MODE( MODE_3 | BG2_ENABLE ); 
-	
 	dma_fast_copy((void*)PausescreenBitmap, (void*)VideoBuffer, PausescreenBitmapLen / 2, DMA_16NOW); 
 
-	while((*KEYS & KEY_START))
-		wait_for_vsync();
-		
-	while(!(*KEYS & KEY_START))
-		wait_for_vsync();
+	// save important information 
+	map.score = get_score();
+	map.damage = get_health();
 
-
-	while((*KEYS & KEY_START))
-		wait_for_vsync();
-		
-	while(!(*KEYS & KEY_START))
-		wait_for_vsync();
-		
-	initialize_game();
+	while(pause) {
+		if (KEYDOWN(KEY_A)) {
+			u8 release = 0;
+			while(!release) {
+				if (!KEYDOWN(KEY_A)) {
+					release = 1;
+					pause = 0;
+				}
+			}
+		}
+	}
+	
 	bg.x_scroll = x;
-	bg.y_scroll = y;
-	update_background();
- 
+	bg.y_scroll = y;	
+	restore_from_pause();
 }
 
 
@@ -164,9 +226,10 @@ void get_input() {
 	}
 
 	
-	if(!(*KEYS & KEY_A)) {
-		set_score( get_score() + 1 );
-		space_ship_movespeed = 2;
+	if(KEYDOWN(KEY_A)) { u8 release = 0; while(!release) { if (!KEYDOWN(KEY_A)) { release = 1; } }
+		//set_score( get_score() + 1 );
+		//space_ship_movespeed = 2;
+		initialize_pause();
 	}
 	if((*KEYS & KEY_A)) {
 		space_ship_movespeed = 1;
