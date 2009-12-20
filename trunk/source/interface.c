@@ -140,7 +140,7 @@ void set_health( int hp ) {
 	int shiftright = 5;
 	
 	if( hp > ship_maxhealth || hp < 0)
-		hp = 1;	
+		hp = 4;	
 	
 	int loop;
 	for( loop = 0; loop < ship_maxhealth; loop++ ) {
