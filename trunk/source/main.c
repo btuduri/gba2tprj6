@@ -26,7 +26,6 @@
  */
 signed int space_ship_movespeed;  
 Sprite space_ship, UFO, bullet;
-Map map;
  
 int start_status = 0;
 
@@ -63,51 +62,25 @@ void initialize_game() {
 	//configure background modi.
 	SET_MODE( MODE_2 | BG2_ENABLE | OBJ_ENABLE | OBJ_MAP_1D ); //set mode 2 and enable sprites and 1d mapping
 	REG_BG2CNT = BG_COLOR256 | ROTBG_SIZE_512x512 |(charbase << CHAR_SHIFT) | (screenbase << SCREEN_SHIFT);
-
-	// store pointers to import map information.
-	map.level_palette = (void *)SpacemapPal;
-	map.level_tiles = (void *)SpacemapTiles;
-	map.level_map = (void *)SpacemapMap;
 	
-
-	//Copy background palette into memory
+	// Copy the BG into the memory
 	dma_fast_copy((void*)SpacemapPal, (void*)BGPaletteMem, SpacemapPalLen / 2, DMA_16NOW);
-	//set the tile images
 	dma_fast_copy((void*)SpacemapTiles, (void*)CHARBASEBLOCK(charbase), SpacemapTilesLen / 2, DMA_32NOW);
-	//copy the tile map into background 2
 	dma_fast_copy((void*)SpacemapMap, (void*)bg2map, SpacemapMapLen / 2, DMA_32NOW);
+						
 	
-	// start of spaceship
-	space_ship.x = 100;
-	space_ship.y = 100;
-	
-	// specify offsets and index of sprite in OAM array.
-	space_ship.OAMSpriteNum = 0;
-
-	
-	u16 loop;
-	for(loop = 0; loop < 256; loop++)          //load the palette into memory
-		OBJPaletteMem[loop] = ShipPal[loop];					
-	
-	
-	//initialize the sprites
+	// Initialize functions
 	initialize_sprites();
-	
-	//initialize the userinterface for score and health
 	initialize_interface();			
-	
-	initialize_ai();		
-	
-  	sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
-	sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;				//size 32x32 and x-coord
-	sprites[space_ship.OAMSpriteNum].attribute2 = 0;                      				//pointer to tile where sprite starts
-		
-	for(loop = 0; loop < 512; loop++)				//load 1st sprite image data
-		OAMData[loop] = ShipTiles[loop];		
+	initialize_ai();
+
+	// Set interface info for the start
+	set_score( 0000 );
+	set_health( ship_maxhealth );		
 		
 }
 
-void restore_from_pause() {
+void uninitialize_pause() {
     u32 charbase 	= 0;
 	u32 screenbase 	= 28;	
 	u16* bg2map = (unsigned short *)SCREENBASEBLOCK(screenbase);	
@@ -116,66 +89,38 @@ void restore_from_pause() {
 	SET_MODE( MODE_2 | BG2_ENABLE | OBJ_ENABLE | OBJ_MAP_1D ); //set mode 2 and enable sprites and 1d mapping
 	REG_BG2CNT = BG_COLOR256 | ROTBG_SIZE_512x512 |(charbase << CHAR_SHIFT) | (screenbase << SCREEN_SHIFT);
 
-	//Copy background palette into memory
+	// Copy the BG into the memory
 	dma_fast_copy((void*)SpacemapPal, (void*)BGPaletteMem, SpacemapPalLen / 2, DMA_16NOW);
-	//set the tile images
 	dma_fast_copy((void*)SpacemapTiles, (void*)CHARBASEBLOCK(charbase), SpacemapTilesLen / 2, DMA_32NOW);
-	//copy the tile map into background 2
 	dma_fast_copy((void*)SpacemapMap, (void*)bg2map, SpacemapMapLen / 2, DMA_32NOW);
 	
-	
-	u16 loop;
-	for(loop = 0; loop < 256; loop++)          //load the palette into memory
-		OBJPaletteMem[loop] = ShipPal[loop];				
-	
-  	sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;					//setup sprite info, 256 colour, shape and y-coord
-	sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;							//size 32x32 and x-coord
-	sprites[UFO.OAMSpriteNum].attribute2 = 32;     									//pointer to tile where sprite starts
-
-	
-	for(loop = 512; loop < 1024; loop++)			//load 2st sprite image data
-		OAMData[loop] = UFOTiles[loop-512];	
-	
-	for(loop = 1024; loop < 1536; loop++)			//load 3st sprite image data
-		OAMData[loop] = bulletTiles[loop-1024];
-	
-	
-	//initialize the sprites
+	// Initialize functions
 	initialize_sprites();
-	
-	//initialize_ai();
-	
-	//initialize the userinterface for score and health
 	initialize_interface();
 	
-  	sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;	//setup sprite info, 256 colour, shape and y-coord
-	sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;				//size 32x32 and x-coord
-	sprites[space_ship.OAMSpriteNum].attribute2 = 0;                      				//pointer to tile where sprite starts
-		
-	for(loop = 0; loop < 512; loop++)				//load 1st sprite image data
-		OAMData[loop] = ShipTiles[loop];
-		
-	set_score(map.score);
-	set_health(map.damage);
+	// set sprites back at orginal position
+	update_sprite( space_ship, 352 );
+	update_sprite( UFO, 416 );
 	
-	update_background();
+	// Set interface info for the restore
+	set_score( get_score() );
+	set_health( get_health() );
+	
 }
 
 /**
  * initializes the pause mode
  */
 void initialize_pause() {
-	u32 pause = 1;
 	int x = bg.x_scroll;
 	int y = bg.y_scroll;
 	reset_background();
+	
+	// Set the PauseScreen bitmap on screen
  	SET_MODE( MODE_3 | BG2_ENABLE ); 
 	dma_fast_copy((void*)PausescreenBitmap, (void*)VideoBuffer, PausescreenBitmapLen / 2, DMA_16NOW); 
 
-	// save important information 
-	map.score = get_score();
-	map.damage = get_health();
-
+	u32 pause = 1;
 	while(pause) {
 		if (KEYDOWN(KEY_A)) {
 			u8 release = 0;
@@ -187,10 +132,13 @@ void initialize_pause() {
 			}
 		}
 	}
+	
 	// restore background information
 	bg.x_scroll = x;
 	bg.y_scroll = y;	
-	restore_from_pause();
+	
+	uninitialize_pause();
+	
 }
 
 
@@ -237,10 +185,7 @@ void get_input() {
 		if( ( space_ship.y -= space_ship_movespeed ) <= 0 || space_ship.y > ( 160 - 32 ) )
 			space_ship.y = 0;
 		
-		//space_ship.active_frame = 0;
-		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
-		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;
-		sprites[space_ship.OAMSpriteNum].attribute2 = 0;
+		update_sprite( space_ship, 352 );
 		
 		if (bg.y_scroll >= 5)
 			bg.y_scroll -= (space_ship_movespeed * 4);
@@ -250,10 +195,7 @@ void get_input() {
 		if( ( space_ship.y += space_ship_movespeed ) > ( 160 - 53 ) )
 			space_ship.y = ( 160 - 53 );
 		
- 		//space_ship.active_frame = 0;
-		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
-		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
-		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
+		update_sprite( space_ship, 352 );
 		
 		if (bg.y_scroll <= 350)
 			bg.y_scroll += (space_ship_movespeed * 4);
@@ -262,10 +204,8 @@ void get_input() {
 		if( ( space_ship.x += space_ship_movespeed ) > ( 240 - 32 ) )
 			space_ship.x = ( 240 - 32 );
 		
- 		//space_ship.active_frame = 0;
-		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
-		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;	
-		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
+		update_sprite( space_ship, 352 );
+		
 		if (bg.x_scroll <= 260)
 			bg.x_scroll += (space_ship_movespeed * 4);
 	}
@@ -273,41 +213,13 @@ void get_input() {
 		if( ( space_ship.x -= space_ship_movespeed ) < 0 || space_ship.x > ( 240 - 32 ) )
 			space_ship.x = 0;
 			
- 		//space_ship.active_frame = 0;
-		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
-		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
-		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
+		update_sprite( space_ship, 352 );
 		
 		if (bg.x_scroll >= 5)
 			bg.x_scroll -= (space_ship_movespeed * 4);
 	}
 	if(!(*KEYS & KEY_B)) {
 		fire_bullet();
-	}
-	
-
-	/////////////////////////////////
-	// Save/Load on SRAM testing   //
-	/////////////////////////////////
-	
-	if(!(*KEYS & KEY_L)) {
-		erase_SRAM( 40 ); 				// Erase 40 chars
-	
-		save_int(0,space_ship.x);		// Save Ship X
-		save_int(10,space_ship.y);		// Save Ship Y
-		save_int(20,bg.x_scroll);		// Save BG X
-		save_int(30,bg.y_scroll);		// Save BG Y
-	}
-	if(!(*KEYS & KEY_R)) {
-		space_ship.x = load_int(0);		// Load Ship X
-		space_ship.y = load_int(10);	// Load Ship Y
-		
-		sprites[space_ship.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | space_ship.y;
-		sprites[space_ship.OAMSpriteNum].attribute1 = SIZE_32 | space_ship.x;			
-		sprites[space_ship.OAMSpriteNum].attribute2 = 0; 
-		
-		bg.x_scroll = load_int(20);		// Load BG X
-		bg.y_scroll = load_int(30);		// Load BG Y
 	}
 	
 }
