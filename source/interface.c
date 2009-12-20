@@ -26,72 +26,51 @@ Sprite score_1, score_2, score_3, score_4;
 void initialize_interface() {
 
 	// Set max health
-	ship_maxhealth = 10;
+	ship_maxhealth = 5;
 
 	u16 loop;
 
-	// Load score tiles on 50th-59th place
-	for(loop = 25600; loop < 26112; loop++)
-		OAMData[loop] = text_0Tiles[loop-25600];		
+	// Load score tiles on 0th-9th place
+	for(loop = 0; loop < 512; loop++)
+		OAMData[loop] = text_0Tiles[loop];		
 	  	
-	for(loop = 26112; loop < 26624; loop++)
-		OAMData[loop] = text_1Tiles[loop-26112];	
+	for(loop = 512; loop < 1024; loop++)
+		OAMData[loop] = text_1Tiles[loop-512];	
 	  	
-	for(loop = 26624; loop < 27136; loop++)
-		OAMData[loop] = text_2Tiles[loop-26624];	
+	for(loop = 1024; loop < 1536; loop++)
+		OAMData[loop] = text_2Tiles[loop-1024];	
 	  	
-	for(loop = 27136; loop < 27648; loop++)
-		OAMData[loop] = text_3Tiles[loop-27136];	
+	for(loop = 1536; loop < 2048; loop++)
+		OAMData[loop] = text_3Tiles[loop-1536];	
 	  	
-	for(loop = 27648; loop < 28160; loop++)
-		OAMData[loop] = text_4Tiles[loop-27648];		
+	for(loop = 2048; loop < 2560; loop++)
+		OAMData[loop] = text_4Tiles[loop-2048];		
 	  	
-	for(loop = 28160; loop < 28672; loop++)
-		OAMData[loop] = text_5Tiles[loop-28160];	
+	for(loop = 2560; loop < 3072; loop++)
+		OAMData[loop] = text_5Tiles[loop-2560];	
 	  	
-	for(loop = 28672; loop < 29184; loop++)
-		OAMData[loop] = text_6Tiles[loop-28672];	
+	for(loop = 3072; loop < 3584; loop++)
+		OAMData[loop] = text_6Tiles[loop-3072];	
 		
-	for(loop = 29184; loop < 29696; loop++)
-		OAMData[loop] = text_7Tiles[loop-29184];
+	for(loop = 3584; loop < 4096; loop++)
+		OAMData[loop] = text_7Tiles[loop-3584];
 		
-	for(loop = 29696; loop < 30208; loop++)
-		OAMData[loop] = text_8Tiles[loop-29696];
+	for(loop = 4096; loop < 4608; loop++)
+		OAMData[loop] = text_8Tiles[loop-4096];
 		
-	for(loop = 30208; loop < 30720; loop++)
-		OAMData[loop] = text_9Tiles[loop-30208];
-		
+	for(loop = 4608; loop < 5120; loop++)
+		OAMData[loop] = text_9Tiles[loop-4608];
 	
-	// Load background tiles on 60th
-	for(loop = 30720; loop < 31232; loop++)
-		OAMData[loop] = interfacebgTiles[loop-30720];
+	// Load healthbar tiles on 10th
+	for(loop = 5120; loop < 5632; loop++)
+		OAMData[loop] = healthbarTiles[loop-5120];
 		
-	// Load healthbar tiles on 61th
-	for(loop = 31232; loop < 31744; loop++)
-		OAMData[loop] = healthbarTiles[loop-31232];
 		
-	// Score sprite numbers from 62 to 65
-	score_1.OAMSpriteNum = 62;
-	score_2.OAMSpriteNum = 63;
-	score_3.OAMSpriteNum = 64;
-	score_4.OAMSpriteNum = 65;
-	
-	// Interface background sprite numbers genereren
-	int bg_sprites = 66 + ship_maxhealth;
-	for( loop = bg_sprites; loop < (bg_sprites+8); loop++ )
-		{
-	
-		sprites[loop].attribute0 = COLOR_256 | SQUARE | 128;
-		sprites[loop].attribute1 = SIZE_32 | ((loop-bg_sprites) * 32);
-		sprites[loop].attribute2 = 1920; 
-		
-	}
-	
-	// Set current score on 0000
-	set_score( 0000 );
-	
-	// Set current health on max
-	set_health( ship_maxhealth );
+	// Score sprite numbers from 0-3th place
+	score_1.OAMSpriteNum = 0;
+	score_2.OAMSpriteNum = 1;
+	score_3.OAMSpriteNum = 2;
+	score_4.OAMSpriteNum = 3;
 	
 	// Load highscores
 	load_highscores();
@@ -125,19 +104,19 @@ void set_score( int score ) {
 	
 	sprites[score_1.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | score_1.y;					//setup sprite info, 256 colour, shape and y-coord
 	sprites[score_1.OAMSpriteNum].attribute1 = SIZE_32 | score_1.x;							//size 32x32 and x-coord
-	sprites[score_1.OAMSpriteNum].attribute2 = 1600 + (segment_1 * 32); 
+	sprites[score_1.OAMSpriteNum].attribute2 = (segment_1 * 32); 
 	
 	sprites[score_2.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | score_2.y;					//setup sprite info, 256 colour, shape and y-coord
 	sprites[score_2.OAMSpriteNum].attribute1 = SIZE_32 | score_2.x;							//size 32x32 and x-coord
-	sprites[score_2.OAMSpriteNum].attribute2 = 1600 + (segment_2 * 32);
+	sprites[score_2.OAMSpriteNum].attribute2 = (segment_2 * 32);
 	
 	sprites[score_3.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | score_3.y;					//setup sprite info, 256 colour, shape and y-coord
 	sprites[score_3.OAMSpriteNum].attribute1 = SIZE_32 | score_3.x;							//size 32x32 and x-coord
-	sprites[score_3.OAMSpriteNum].attribute2 = 1600 + (segment_3 * 32);
+	sprites[score_3.OAMSpriteNum].attribute2 = (segment_3 * 32);
 	
 	sprites[score_4.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | score_4.y;					//setup sprite info, 256 colour, shape and y-coord
 	sprites[score_4.OAMSpriteNum].attribute1 = SIZE_32 | score_4.x;							//size 32x32 and x-coord
-	sprites[score_4.OAMSpriteNum].attribute2 = 1600 + (segment_4 * 32);
+	sprites[score_4.OAMSpriteNum].attribute2 = (segment_4 * 32);
 
 } 
 
@@ -174,9 +153,9 @@ void set_health( int hp ) {
 			x = -2;
 		}
 	
-		sprites[loop+66].attribute0 = COLOR_256 | SQUARE | y;
-		sprites[loop+66].attribute1 = SIZE_32 | x;
-		sprites[loop+66].attribute2 = 1952; 
+		sprites[loop+4].attribute0 = COLOR_256 | SQUARE | y;
+		sprites[loop+4].attribute1 = SIZE_32 | x;
+		sprites[loop+4].attribute2 = 320; 
 		
 	}
  

@@ -26,6 +26,7 @@
 
 // Main userinterface init function
 extern void initialize_interface();
+extern int ship_maxhealth;
 
 // Scores
 extern void set_score( int score );

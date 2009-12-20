@@ -10,6 +10,7 @@
 #define AI_HEADER
 
 // Main userinterface init function
+extern void update_sprite( Sprite s, u16 tiles );
 extern void track_ai();
 extern void track_bullet();
 extern void initialize_ai();

@@ -5,31 +5,59 @@
 #include "../headers/maps.h"			// maps header file
 
 Sprite  space_ship, UFO, bullet;
+
+
 /**
- * Load all ai tiles into memory
+ * Load all AI tiles into memory
  */
 void initialize_ai() {
+
+	// Load 256 colors in the palette memory
+	u16 loop;
+	for(loop = 0; loop < 256; loop++)
+		OBJPaletteMem[loop] = ShipPal[loop];	
+
+	// start of spaceship
+	space_ship.x = 100;
+	space_ship.y = 100;
+
 	// start of UFO
 	UFO.x = 20;
 	UFO.y = 20;
 	
-	UFO.OAMSpriteNum = 1;
-	bullet.OAMSpriteNum = 2;
+	// specify offsets and index of sprite in OAM array.
+	space_ship.OAMSpriteNum = 10;
+	UFO.OAMSpriteNum = 11;
+	bullet.OAMSpriteNum = 12;
 	
-  	sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;					//setup sprite info, 256 colour, shape and y-coord
-	sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;							//size 32x32 and x-coord
-	sprites[UFO.OAMSpriteNum].attribute2 = 32;     									//pointer to tile where sprite starts
+	update_sprite( UFO, 416 );
+	update_sprite( space_ship, 352 );
 	
-	u16 loop;
-
 	
-	for(loop = 512; loop < 1024; loop++)			//load 2st sprite image data
-		OAMData[loop] = UFOTiles[loop-512];
+	for(loop = 5632; loop < 6144; loop++)
+		OAMData[loop] = ShipTiles[loop-5632];		
 		
-	for(loop = 1024; loop < 1536; loop++)			//load 3st sprite image data
-		OAMData[loop] = bulletTiles[loop-1024];
+	for(loop = 6144; loop < 6656; loop++)
+		OAMData[loop] = bulletTiles[loop-6144];
+		
+	for(loop = 6656; loop < 7168; loop++)
+		OAMData[loop] = UFOTiles[loop-6656];
 
 }
+
+
+/**
+ * Update specific sprite on the place
+ */
+void update_sprite( Sprite s, u16 tiles ) {
+
+  	sprites[s.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | s.y;
+	sprites[s.OAMSpriteNum].attribute1 = SIZE_32 | s.x;
+	sprites[s.OAMSpriteNum].attribute2 = tiles;
+
+}
+
+
 /**
  * this function starts bullet
  */
@@ -38,14 +66,13 @@ void fire_bullet(){
 			bullet.y = -2;
 			bullet.x = -2;
 			
-			sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
-			sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
-			sprites[bullet.OAMSpriteNum].attribute2 = 64; 	
+			update_sprite( bullet, 384 );
 
 			bullet.x = space_ship.x + 3;
 			bullet.y = space_ship.y - 24;
 		}
 }
+
 
 /**
  * this function handles the ai; spawning enemies, etc.
@@ -66,30 +93,24 @@ void track_ai() {
 		UFO.x=20;
 	}
 	UFO.x++;
-	
-	sprites[UFO.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | UFO.y;
-    sprites[UFO.OAMSpriteNum].attribute1 = SIZE_32 | UFO.x;
-    sprites[UFO.OAMSpriteNum].attribute2 = 32;   
+	update_sprite( UFO, 416 );
 }
+
 
 /**
  * this function handles the bullet.
  */
 void track_bullet() {
-	if(bullet.y >= 0){
+	if( bullet.y >= 0 ) {
 		bullet.y = bullet.y - 2;
-		sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
-		sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
-		sprites[bullet.OAMSpriteNum].attribute2 = 64; 
+		update_sprite( bullet, 384 );
 	}
-	if(bullet.x+10 >= UFO.x &&	bullet.x-10 <= UFO.x && bullet.y == UFO.y){
+	if( bullet.x+10 >= UFO.x &&	bullet.x-10 <= UFO.x && bullet.y == UFO.y ) {
 			bullet.y = -2;
 			bullet.x = -2;
 			
-			sprites[bullet.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | bullet.y;
-			sprites[bullet.OAMSpriteNum].attribute1 = SIZE_32 | bullet.x;
-			sprites[bullet.OAMSpriteNum].attribute2 = 64; 	
-	
+			update_sprite( bullet, 384 );
+			
 			set_score( get_score() + 1 );
 	}
 }
