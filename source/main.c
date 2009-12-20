@@ -76,7 +76,7 @@ void initialize_game() {
 
 	// Set interface info for the start
 	set_score( 0000 );
-	set_health( ship_maxhealth );		
+	set_health( 4 );		
 		
 }
 
