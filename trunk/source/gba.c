@@ -16,5 +16,7 @@ u16* OBJPaletteMem 	=(u16*)0x5000200;
 
 void wait_for_vsync()
 {
-	while((volatile u16)REG_VCOUNT != 160){}
+	//while((volatile u16)REG_VCOUNT != 160){}
+	while((volatile u16)REG_VCOUNT >= 160);
+	while((volatile u16)REG_VCOUNT < 160);
 }
