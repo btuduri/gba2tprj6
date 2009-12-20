@@ -208,11 +208,13 @@ int compare( const void * a, const void * b ) {
 void load_highscores() {
  
 	int i;
-	for( i = 0; i < 10; i++ ) {
+	for( i = 0; i < 11; i++ ) {
 	
-		highscores[(10-i)] = load_int( i * 10 );
+		highscores[i] = load_int( i * 10 );
 	
 	}
+	
+	qsort( highscores, 11, sizeof(int), compare );
 	
 }
  
@@ -223,17 +225,16 @@ void load_highscores() {
   
  void save_highscore() {
  
-	highscores[10] = get_score();
+	highscores[0] = get_score();
 	qsort( highscores, 11, sizeof(int), compare );
-
-	erase_SRAM( 500 );
-
+	
+	erase_SRAM( 220 );
+	
 	int i;
 	for( i = 1; i < 11; i++ ) {
 	
 		save_int( 10 * (i-1), highscores[i] );
 		
 	}
-
  
  }

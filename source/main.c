@@ -27,6 +27,8 @@
 signed int space_ship_movespeed;  
 Sprite space_ship, UFO, bullet;
  
+int start_status = 0;
+
 
 /**
  * initializes the startmenu on screen
@@ -136,15 +138,34 @@ void initialize_pause() {
  */
 void get_input() {
 
-	if(!(*KEYS & KEY_START)) {
-		//initialize_pause();
-		save_highscore();
-	}
-	if(!(*KEYS & KEY_A)) {
-		// Testing interface
-		set_score( get_score() + 1 );
-		set_health( get_health() + 1 );
+
+    ///////////////////////////////
+    // LETOP: save_highscore() werkt, echter kan je deze niet zomaar onder een button koppelen
+	//        dan wordt save_highscore() namelijk vaker aangeroepen, dus meer gesaved!
+	//
+	// Wouter, kun jij hier wellicht een functie voor maken die we eventueel kunnen aanroepen.
+	// De manier die ik hieronder heb toegepast is iets mooier dan die van 2 while lussen!
+	///////////////////////////////
+	if(!(*KEYS & KEY_START) && start_status == 0 ) {
+
+		start_status = 1;
 		
+	}
+	if((*KEYS & KEY_START) && start_status == 1) {
+
+		start_status = 2;
+		
+	}
+	if( start_status == 2 ) {
+	
+		save_highscore();
+		start_status = 0;
+		
+	}
+
+	
+	if(!(*KEYS & KEY_A)) {
+		set_score( get_score() + 1 );
 		space_ship_movespeed = 2;
 	}
 	if((*KEYS & KEY_A)) {
