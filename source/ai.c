@@ -32,18 +32,29 @@ void initialize_ai() {
 	UFO.x = 20;
 	UFO.y = 20;
 	
+	// start of UFO2
+	
+	
+	// start of UFO3
+	UFO3.x = 240;
+	UFO3.y = 10;
+	
+	
 	
 	
 	// specify offsets and index of sprite in OAM array.
 	space_ship.OAMSpriteNum = 10;
 	UFO.OAMSpriteNum = 11;
 	bullet.OAMSpriteNum = 12;
+	UFO2.OAMSpriteNum = 13;
+	UFO3.OAMSpriteNum = 14;
 
 
 	
-	
-	update_sprite( UFO, 416 );      	//13 x 32 = 416 waarom?? klopt niet met de UFO.OAMSpriteNum 
 	update_sprite( space_ship, 352 );
+	update_sprite( UFO, 416 );      	//13 x 32 = 416 waarom?? klopt niet met de UFO.OAMSpriteNum 
+	//update_sprite(UFO2, 448 );
+	update_sprite( UFO3, 480 );
 	
 	/**
 	*Load Tiles
@@ -57,6 +68,12 @@ void initialize_ai() {
 		
 	for(loop = 6656; loop < 7168; loop++)
 		OAMData[loop] = UFOTiles[loop-6656];
+		
+	for(loop = 7168; loop < 7680; loop++)
+		OAMData[loop] = UFO2Tiles[loop-7168];
+	
+	for(loop = 7680; loop < 8192; loop++)
+		OAMData[loop] = UFO3Tiles[loop-7680];
 	
 		
 
@@ -97,8 +114,9 @@ void fire_bullet(){
 void track_ai() {
 	if(UFO.x >= 240){
 		UFO.x = 10;
-		UFO.y = UFO.y+20;
+		UFO.y = UFO.y+5;
 	}
+	
 	if(get_score()%20==0 && UFO.y!=20){
 		UFO.y=20;
 		UFO.x=20;
@@ -109,8 +127,16 @@ void track_ai() {
 		UFO.y=20;
 		UFO.x=20;
 	}
+	
 	UFO.x++;
 	update_sprite( UFO, 416 );
+	
+	if(UFO3.x <= 0){
+		UFO3.x = 240;
+		UFO3.y = UFO3.y+5;
+	}
+	UFO3.x--;
+	update_sprite( UFO3, 480 );
 }
 
 
