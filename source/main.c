@@ -19,13 +19,14 @@
 #include "../headers/menus.h"			// menus header file
 #include "../headers/interface.h"		// interface header file
 #include "../headers/ai.h"				// interface header file
+			
 
 
 /**
  * Usefull game vars
  */
 signed int space_ship_movespeed;  
-Sprite space_ship, UFO, bullet;
+Sprite space_ship, UFO, bullet, UFO2, UFO3;
  
 int start_status = 0;
 
