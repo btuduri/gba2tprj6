@@ -1,10 +1,17 @@
+/**
+ *
+ * @date	11/12/09
+ * @author	Wouter van Teijlingen, Wesley Hilhorst, Sebastiaan Seegers
+ * @email	wouter@0xff.nl, wesley.hilhorst@gmail.com, Sseegers@gmail.com
+ */
+
 #include "../headers/gba.h"
 #include "../headers/gba_sprites.h"
 #include "../headers/ai.h"
 #include "../headers/interface.h"
 #include "../headers/maps.h"			// maps header file
 
-Sprite  space_ship, UFO, bullet;
+Sprite  space_ship, UFO, bullet, UFO2, UFO3;
 
 
 /**
@@ -15,7 +22,7 @@ void initialize_ai() {
 	// Load 256 colors in the palette memory
 	u16 loop;
 	for(loop = 0; loop < 256; loop++)
-		OBJPaletteMem[loop] = ShipPal[loop];	
+		OBJPaletteMem[loop] = PalletPal[loop];	
 
 	// start of spaceship
 	space_ship.x = 100;
@@ -25,14 +32,22 @@ void initialize_ai() {
 	UFO.x = 20;
 	UFO.y = 20;
 	
+	
+	
 	// specify offsets and index of sprite in OAM array.
 	space_ship.OAMSpriteNum = 10;
 	UFO.OAMSpriteNum = 11;
 	bullet.OAMSpriteNum = 12;
+
+
 	
-	update_sprite( UFO, 416 );
+	
+	update_sprite( UFO, 416 );      	//13 x 32 = 416 waarom?? klopt niet met de UFO.OAMSpriteNum 
 	update_sprite( space_ship, 352 );
 	
+	/**
+	*Load Tiles
+	*/
 	
 	for(loop = 5632; loop < 6144; loop++)
 		OAMData[loop] = ShipTiles[loop-5632];		
@@ -42,6 +57,8 @@ void initialize_ai() {
 		
 	for(loop = 6656; loop < 7168; loop++)
 		OAMData[loop] = UFOTiles[loop-6656];
+	
+		
 
 }
 
@@ -78,7 +95,7 @@ void fire_bullet(){
  * this function handles the ai; spawning enemies, etc.
  */
 void track_ai() {
-	if(UFO.x >= 200){
+	if(UFO.x >= 240){
 		UFO.x = 10;
 		UFO.y = UFO.y+20;
 	}
@@ -109,8 +126,10 @@ void track_bullet() {
 			bullet.y = -2;
 			bullet.x = -2;
 			
-			update_sprite( bullet, 384 );
 			
+			update_sprite( bullet, 384 );
+		
 			set_score( get_score() + 1 );
 	}
 }
+
