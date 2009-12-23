@@ -102,8 +102,7 @@ void uninitialize_pause() {
 	// set sprites back at orginal position
 	update_sprite( space_ship, 352 );
 	update_sprite( UFO, 416 );
-	update_sprite( UFO2, 448 );
-	update_sprite( UFO3, 480 );
+
 	
 	// Set interface info for the restore
 	set_score( get_score() );
