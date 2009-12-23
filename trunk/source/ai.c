@@ -11,7 +11,9 @@
 #include "../headers/interface.h"
 #include "../headers/maps.h"			// maps header file
 
-Sprite  space_ship, UFO, bullet, UFO2, UFO3;
+Sprite  space_ship, UFO, bullet;
+Sprite enemies[30];
+int current_way;
 
 
 /**
@@ -27,34 +29,14 @@ void initialize_ai() {
 	// start of spaceship
 	space_ship.x = 100;
 	space_ship.y = 100;
+	
 
-	// start of UFO
-	UFO.x = 20;
-	UFO.y = 20;
-	
-	// start of UFO2
-	
-	
-	// start of UFO3
-	UFO3.x = 240;
-	UFO3.y = 10;
-	
-	
-	
-	
 	// specify offsets and index of sprite in OAM array.
 	space_ship.OAMSpriteNum = 10;
-	UFO.OAMSpriteNum = 11;
-	bullet.OAMSpriteNum = 12;
-	UFO2.OAMSpriteNum = 13;
-	UFO3.OAMSpriteNum = 14;
+	bullet.OAMSpriteNum = 11;
 
-
-	
 	update_sprite( space_ship, 352 );
-	update_sprite( UFO, 416 );      	//13 x 32 = 416 waarom?? klopt niet met de UFO.OAMSpriteNum 
-	//update_sprite(UFO2, 448 );
-	update_sprite( UFO3, 480 );
+
 	
 	/**
 	*Load Tiles
@@ -68,15 +50,7 @@ void initialize_ai() {
 		
 	for(loop = 6656; loop < 7168; loop++)
 		OAMData[loop] = UFOTiles[loop-6656];
-		
-	for(loop = 7168; loop < 7680; loop++)
-		OAMData[loop] = UFO2Tiles[loop-7168];
 	
-	for(loop = 7680; loop < 8192; loop++)
-		OAMData[loop] = UFO3Tiles[loop-7680];
-	
-		
-
 }
 
 
@@ -112,31 +86,44 @@ void fire_bullet(){
  * this function handles the ai; spawning enemies, etc.
  */
 void track_ai() {
-	if(UFO.x >= 240){
-		UFO.x = 10;
-		UFO.y = UFO.y+5;
-	}
-	
-	if(get_score()%20==0 && UFO.y!=20){
-		UFO.y=20;
-		UFO.x=20;
-	
-	}
 	if(UFO.y+20 >= space_ship.y && UFO.x+10 >= space_ship.x && UFO.x-10 <= space_ship.x){
 		set_health( get_health() - 1 );
 		UFO.y=20;
 		UFO.x=20;
 	}
 	
-	UFO.x++;
-	update_sprite( UFO, 416 );
+	u16 loop;
+	for( loop = 15; loop < 21; loop++ ) {
 	
-	if(UFO3.x <= 0){
-		UFO3.x = 240;
-		UFO3.y = UFO3.y+5;
+		enemies[loop].OAMSpriteNum = loop;
+		
+		if( !enemies[loop].x ) {
+			enemies[loop].x = (loop-15) * 20;
+			enemies[loop].y = 0;
+		}
+		
+		// Choose which way to go
+		if( enemies[loop].x > 220 )
+			current_way = 1;
+		if( enemies[loop].x == 0 )
+			current_way = 2;
+		
+		if( (current_way % 2) == 1 )
+			enemies[loop].x--;
+		else
+			enemies[loop].x++;
+
+		// If the mob is hit by the plane
+		if( enemies[loop].y+20 >= space_ship.y && enemies[loop].y-20 >= space_ship.y && enemies[loop].x+10 >= space_ship.x && enemies[loop].x-10 <= space_ship.x ) {
+			set_health( get_health() - 1 );
+			enemies[loop].x = -40;
+			enemies[loop].y = -40;
+		}
+		
+		update_sprite( enemies[loop], 416 );
+	
 	}
-	UFO3.x--;
-	update_sprite( UFO3, 480 );
+	
 }
 
 
@@ -156,6 +143,13 @@ void track_bullet() {
 			update_sprite( bullet, 384 );
 		
 			set_score( get_score() + 1 );
+	
 	}
 }
+
+
+	
+	
+
+
 
