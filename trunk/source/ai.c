@@ -11,7 +11,7 @@
 #include "../headers/interface.h"
 #include "../headers/maps.h"			// maps header file
 
-Sprite  space_ship, UFO, bullet;
+Sprite  space_ship, UFO, UFO2, UFO3, UFO4, UFO5, UFO6, bullet;
 Sprite enemies[30];
 int current_way;
 

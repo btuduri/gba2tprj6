@@ -26,7 +26,7 @@
  * Usefull game vars
  */
 signed int space_ship_movespeed;  
-Sprite space_ship, UFO, bullet, UFO2, UFO3;
+Sprite space_ship, UFO, bullet, UFO2, UFO3, UFO4, UFO5, UFO6;
  
 int start_status = 0;
 

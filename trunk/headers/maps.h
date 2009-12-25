@@ -14,6 +14,9 @@
 #include "../levels/level1/sprites/UFO.h"	 // Enemy ship 1 sprite
 #include "../levels/level1/sprites/UFO2.h"   // Enemy ship 2 sprite
 #include "../levels/level1/sprites/UFO3.h"	 // Enemy ship 3 sprite
+#include "../levels/level1/sprites/UFO4.h"	 // Enemy ship 4 sprite
+#include "../levels/level1/sprites/UFO5.h"	 // Enemy ship 5 sprite
+#include "../levels/level1/sprites/UFO6.h"	 // Enemy ship 6 sprite
 #include "../levels/level1/sprites/Boom.h"	 // Explosion sprite
 #include "../levels/level1/map/Spacemap.h" 	 // space map
 #include "../levels/level1/Pallet/Pallet.h"  // Color Pallet
