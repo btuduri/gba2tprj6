@@ -81,6 +81,7 @@ typedef struct
 	//u16 sprite_frame[3];     //animation frame storage
 	//int active_frame;        //which frame is active
 	u16 OAMSpriteNum;       //which sprite referring to
+	u16 sprite_index;
 } Sprite;
 
 //create an OAM variable and make it point to the address of OAM
@@ -91,6 +92,7 @@ extern OAMEntry sprites[128];
 
 extern void copy_oam();
 extern void initialize_sprites();
+extern void update_sprite( Sprite s, u16 tiles );
 
 #endif
 

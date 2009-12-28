@@ -44,3 +44,14 @@ void initialize_sprites()
 		sprites[loop].attribute1 = 240;  //x to > 239
 	}
 }
+
+/**
+ * Update specific sprite on the place
+ */
+void update_sprite( Sprite s, u16 tiles ) {
+
+  	sprites[s.OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | s.y;
+	sprites[s.OAMSpriteNum].attribute1 = SIZE_32 | s.x;
+	sprites[s.OAMSpriteNum].attribute2 = tiles;
+
+}

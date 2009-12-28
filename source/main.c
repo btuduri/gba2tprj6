@@ -242,12 +242,9 @@ int main() {
 	while(1) {
 		get_input();
 		track_ai();
-		track_bullet();
 		wait_for_vsync();
 		copy_oam();
-		if (bg.y_scroll <= -70) bg.y_scroll = 350;
-		else bg.y_scroll--;
-		update_background();
+		rotate_background();
 	}
 	return 0;
 }
