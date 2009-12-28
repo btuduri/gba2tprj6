@@ -28,3 +28,9 @@ void reset_background() {
 	bg.y_scroll = 0;
 	update_background();
 }
+
+void rotate_background() {
+	if (bg.y_scroll <= -70) bg.y_scroll = 350;
+	else bg.y_scroll--;
+	update_background();
+}
