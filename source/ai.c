@@ -100,9 +100,10 @@ void initialize_ai() {
 	/**
 	 * put one ufo on screen.
 	 */
-	UFOS[0].x = 100;
+	UFOS[0].x = 30;
 	UFOS[0].y = 70;
 	update_sprite(UFOS[0], UFOS[0].sprite_index);
+	UFOS_on_scr++;
 }
 
 
@@ -125,6 +126,22 @@ void fire_bullet(){
  */
 void track_ai() {
 	AI_vsync_count++;
+	
+	if (UFOS_on_scr < 1) {
+		// this spawn place should be made random.
+		UFOS[0].x = 70;
+		UFOS[0].y = 70;
+		update_sprite(UFOS[0], UFOS[0].sprite_index);
+		UFOS_on_scr++;
+	}
+	
+	// the following things should be added:
+	// 1) spawn more UFOS if certain scores are met.
+	// 2) randomize the position of UFOS with intelligence.
+	//    let them search for the space_ship, by creating a range of
+	//    x and y coordinates that are in the neighborhood of the space_ship.
+	// 3) if health is zero; game over.
+	// 4) if score of n points is reached, level completed.
 
 	u16 loop;
 	for(loop = 0;loop < UFOS_LEN; loop++) {
@@ -137,52 +154,15 @@ void track_ai() {
 			 AI_vsync_count = 0;
 			 UFOS_expl_on_scr = 0;
 		}
-
-		
+		// check if ufo is hit by a plane
+		if( UFOS[loop].y+10 >= space_ship.y && 
+			UFOS[loop].y-10 <= space_ship.y && 
+			UFOS[loop].x+10 >= space_ship.x && 
+			UFOS[loop].x-10 <= space_ship.x ) {
+			set_health( get_health() - 1 );
+		}		
 	}
 	track_bullet();
-	/*if(UFO.y+20 >= space_ship.y && UFO.x+10 >= space_ship.x && UFO.x-10 <= space_ship.x){
-		set_health( get_health() - 1 );
-		UFO.y=20;
-		UFO.x=20;
-	}
-	
-	u16 loop;
-	for( loop = 15; loop < 21; loop++ ) {
-	
-		enemies[loop].OAMSpriteNum = loop;
-		
-		//if( !enemies[loop].x ) {
-		//	enemies[loop].x = (loop-15) * 20;
-		//	enemies[loop].y = 0;
-		//}
-		
-		// Choose which way to go
-		if( enemies[loop].x > 220 )
-			current_way = 1;
-		if( enemies[loop].x == 0 )
-			current_way = 2;
-		
-		if( (current_way % 2) == 1 ) {
-			enemies[loop].x--;
-			if (enemies[loop].y++ >= 240) enemies[loop].y = 0;
-		} else {
-			enemies[loop].x++;
-			if (enemies[loop].y-- <= 0) enemies[loop].y = 0;
-		}
-		// If the mob is hit by the plane
-		if( enemies[loop].y+20 >= space_ship.y && 
-			enemies[loop].y-20 >= space_ship.y && 
-			enemies[loop].x+10 >= space_ship.x && 
-			enemies[loop].x-10 <= space_ship.x ) {
-			set_health( get_health() - 1 );
-		//	enemies[loop].x = -40;
-		//	enemies[loop].y = -40;
-		}
-		
-		update_sprite( enemies[loop], 416 );
-	
-	}*/	
 }
 
 
@@ -199,7 +179,7 @@ void track_bullet() {
 	for(loop=0; loop<UFOS_LEN; loop++) {
 		if (bullet.x+10 >= UFOS[loop].x &&
 		    bullet.x-10 <= UFOS[loop].x &&
-			bullet.y == UFOS[loop].y) {
+			bullet.y-2 <= UFOS[loop].y) {
 				explosion.x = UFOS[loop].x;
 				explosion.y = UFOS[loop].y;
 				bullet.y = -2;
@@ -210,6 +190,7 @@ void track_bullet() {
 				UFOS[loop].y = 160;
 				UFOS_expl_on_scr = 1;
 				set_score( get_score() + 1 );
+				UFOS_on_scr--;
 			}
 	}
 	
