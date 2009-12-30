@@ -1,9 +1,12 @@
 /**
  *
  * @date	11/12/09
- * @author	Wouter van Teijlingen, Wesley Hilhorst, Sebastiaan Seegers
+ * @author	Wouter van Teijlingen, Wesley Hilhorst, Sebastiaan Seegers, Jeroen Visser
  * @email	wouter@0xff.nl, wesley.hilhorst@gmail.com, Sseegers@gmail.com
  */
+
+#include <stdio.h>
+#include <stdlib.h> 
 
 #include "../headers/gba.h"
 #include "../headers/gba_sprites.h"
@@ -12,11 +15,13 @@
 #include "../headers/maps.h"			// maps header file
 
 #define UFOS_LEN 6
+#define EXPLOSION_LEN 20
 Sprite  space_ship, explosion, bullet;
 Sprite UFOS[UFOS_LEN];
 // keep track of important ufo information
 u16 UFOS_on_scr = 0; // keeps track of amount of ufo's on screen.
 u16 UFOS_expl_on_scr = 0; // keeps track of explosion, boolean value.
+u16 Explosion_len = EXPLOSION_LEN; //Duration of explosion of a UFO
 
 // keeping track of vsync is useful for removing explosions from screen.
 u16 AI_vsync_count = 1;
@@ -97,13 +102,6 @@ void initialize_ai() {
 	 */
 	explosion.OAMSpriteNum = 21; // sprite tile index: 608
 	explosion.sprite_index = 608;
-	/**
-	 * put one ufo on screen.
-	 */
-	UFOS[0].x = 30;
-	UFOS[0].y = 70;
-	update_sprite(UFOS[0], UFOS[0].sprite_index);
-	UFOS_on_scr++;
 }
 
 
@@ -128,12 +126,59 @@ void track_ai() {
 	AI_vsync_count++;
 	
 	if (UFOS_on_scr < 1) {
-		// this spawn place should be made random.
-		UFOS[0].x = 70;
-		UFOS[0].y = 70;
+		// Random Spawn of first UFO
+		UFOS[0].x = rand()%230;
+		UFOS[0].y = 20;
 		update_sprite(UFOS[0], UFOS[0].sprite_index);
 		UFOS_on_scr++;
 	}
+	if (UFOS_on_scr < 2 && get_score() > 10) {
+		// Random Spawn of UFO
+		UFOS[1].x = rand()%230;
+		UFOS[1].y = 20;
+		update_sprite(UFOS[1], UFOS[1].sprite_index);
+		UFOS_on_scr++;
+	}
+	if (UFOS_on_scr < 3 && get_score() > 15) {
+		// Random Spawn of UFO
+		UFOS[2].x = rand()%230;
+		UFOS[2].y = 20;
+		update_sprite(UFOS[2], UFOS[2].sprite_index);
+		UFOS_on_scr++;
+	}
+	if (UFOS_on_scr < 4 && get_score() > 20) {
+		// Random Spawn of UFO
+		UFOS[3].x = rand()%230;
+		UFOS[3].y = 20;
+		update_sprite(UFOS[3], UFOS[3].sprite_index);
+		UFOS_on_scr++;
+	}
+	if (UFOS_on_scr < 5 && get_score() > 25) {
+		// Random Spawn of UFO
+		UFOS[4].x = rand()%230;
+		UFOS[4].y = 20;
+		update_sprite(UFOS[4], UFOS[4].sprite_index);
+		UFOS_on_scr++;
+	}
+	
+	//Moving the UFO's
+	if(AI_vsync_count%15==0){
+		UFOS[0].y++;
+		update_sprite(UFOS[0], UFOS[0].sprite_index);
+	}
+	if(get_score() > 10 && AI_vsync_count%14==0){
+		UFOS[1].y++;
+		update_sprite(UFOS[1], UFOS[1].sprite_index);
+	}
+	if(get_score() > 15 && AI_vsync_count%13==0){
+		UFOS[2].y++;
+		update_sprite(UFOS[2], UFOS[2].sprite_index);
+	}
+	if(get_score() > 20 && AI_vsync_count%12==0){
+		UFOS[3].y++;
+		update_sprite(UFOS[3], UFOS[3].sprite_index);
+	}
+	
 	
 	// the following things should be added:
 	// 1) spawn more UFOS if certain scores are met.
@@ -180,18 +225,36 @@ void track_bullet() {
 		if (bullet.x+10 >= UFOS[loop].x &&
 		    bullet.x-10 <= UFOS[loop].x &&
 			bullet.y-2 <= UFOS[loop].y) {
-				explosion.x = UFOS[loop].x;
-				explosion.y = UFOS[loop].y;
+				//Start Explosion
+				if(!UFOS_expl_on_scr){
+					explosion.x = UFOS[loop].x - 10;
+					explosion.y = UFOS[loop].y - 10;
+					update_sprite(explosion, explosion.sprite_index);
+					UFOS_expl_on_scr = 1;
+					Explosion_len = EXPLOSION_LEN;
+
+				}
+				//Respawn UFO
+				UFOS[loop].x = (AI_vsync_count%200)+10;
+				UFOS[loop].y = 20;
+				update_sprite(UFOS[loop], UFOS[loop].sprite_index);
+
+				//Hide Bullet
 				bullet.y = -2;
 				bullet.x = -2;
 				update_sprite(bullet, bullet.sprite_index );
-				update_sprite(UFOS[loop], explosion.sprite_index);
-				UFOS[loop].x = 240;
-				UFOS[loop].y = 160;
-				UFOS_expl_on_scr = 1;
+				
 				set_score( get_score() + 1 );
-				UFOS_on_scr--;
 			}
+	}
+	//Stop Explosion if needed
+	if(UFOS_expl_on_scr && Explosion_len > 1){
+		Explosion_len--;
+	}else{
+		explosion.x = -2;
+		explosion.y = -2;
+		update_sprite(explosion, explosion.sprite_index);
+		UFOS_expl_on_scr = 0;
 	}
 	
 }
