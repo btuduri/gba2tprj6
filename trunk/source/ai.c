@@ -164,20 +164,29 @@ void track_ai() {
 	
 	//Moving the UFO's
 	if(AI_vsync_count%15==0){
+		UFOS[0].x += (space_ship.x - UFOS[0].x)/(space_ship.y - UFOS[0].y);
 		UFOS[0].y++;
 		update_sprite(UFOS[0], UFOS[0].sprite_index);
 	}
 	if(get_score() > 10 && AI_vsync_count%14==0){
+		UFOS[1].x += (space_ship.x - UFOS[1].x)/(space_ship.y - UFOS[1].y);
 		UFOS[1].y++;
 		update_sprite(UFOS[1], UFOS[1].sprite_index);
 	}
 	if(get_score() > 15 && AI_vsync_count%13==0){
+		UFOS[2].x += (space_ship.x - UFOS[2].x)/(space_ship.y - UFOS[2].y);
 		UFOS[2].y++;
 		update_sprite(UFOS[2], UFOS[2].sprite_index);
 	}
 	if(get_score() > 20 && AI_vsync_count%12==0){
+		UFOS[3].x += (space_ship.x - UFOS[3].x)/(space_ship.y - UFOS[3].y);
 		UFOS[3].y++;
 		update_sprite(UFOS[3], UFOS[3].sprite_index);
+	}
+	if(get_score() > 25 && AI_vsync_count%8==0){
+		UFOS[4].x += (space_ship.x - UFOS[4].x)/(space_ship.y - UFOS[4].y);
+		UFOS[4].y++;
+		update_sprite(UFOS[4], UFOS[4].sprite_index);
 	}
 	
 	
