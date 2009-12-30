@@ -163,27 +163,27 @@ void track_ai() {
 	}
 	
 	//Moving the UFO's
-	if(AI_vsync_count%15==0){
+	if(AI_vsync_count%10==0){
 		UFOS[0].x += (space_ship.x - UFOS[0].x)/(space_ship.y - UFOS[0].y);
 		UFOS[0].y++;
 		update_sprite(UFOS[0], UFOS[0].sprite_index);
 	}
-	if(get_score() > 10 && AI_vsync_count%14==0){
+	if(get_score() > 10 && AI_vsync_count%9==0){
 		UFOS[1].x += (space_ship.x - UFOS[1].x)/(space_ship.y - UFOS[1].y);
 		UFOS[1].y++;
 		update_sprite(UFOS[1], UFOS[1].sprite_index);
 	}
-	if(get_score() > 15 && AI_vsync_count%13==0){
+	if(get_score() > 15 && AI_vsync_count%8==0){
 		UFOS[2].x += (space_ship.x - UFOS[2].x)/(space_ship.y - UFOS[2].y);
 		UFOS[2].y++;
 		update_sprite(UFOS[2], UFOS[2].sprite_index);
 	}
-	if(get_score() > 20 && AI_vsync_count%12==0){
+	if(get_score() > 20 && AI_vsync_count%7==0){
 		UFOS[3].x += (space_ship.x - UFOS[3].x)/(space_ship.y - UFOS[3].y);
 		UFOS[3].y++;
 		update_sprite(UFOS[3], UFOS[3].sprite_index);
 	}
-	if(get_score() > 25 && AI_vsync_count%8==0){
+	if(get_score() > 25 && AI_vsync_count%6==0){
 		UFOS[4].x += (space_ship.x - UFOS[4].x)/(space_ship.y - UFOS[4].y);
 		UFOS[4].y++;
 		update_sprite(UFOS[4], UFOS[4].sprite_index);
@@ -200,21 +200,15 @@ void track_ai() {
 
 	u16 loop;
 	for(loop = 0;loop < UFOS_LEN; loop++) {
-		// updating sprites is necessary if explosion is on screen.
-		// we wait AI_vsync_count mod 15, because the explosion is visible
-		// for an acceptable time if we wait 15 syncs.
-		if (UFOS_expl_on_scr &&
-			 AI_vsync_count % 30 == 0) {
-			 update_sprite(UFOS[loop], UFOS[loop].sprite_index);
-			 AI_vsync_count = 0;
-			 UFOS_expl_on_scr = 0;
-		}
 		// check if ufo is hit by a plane
 		if( UFOS[loop].y+10 >= space_ship.y && 
 			UFOS[loop].y-10 <= space_ship.y && 
 			UFOS[loop].x+10 >= space_ship.x && 
 			UFOS[loop].x-10 <= space_ship.x ) {
 			set_health( get_health() - 1 );
+			UFOS[loop].x = random();
+			UFOS[loop].y = 20;
+			update_sprite(UFOS[loop], UFOS[loop].sprite_index);
 		}		
 	}
 	track_bullet();
