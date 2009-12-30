@@ -15,5 +15,6 @@ extern void track_ai();
 extern void track_bullet();
 extern void initialize_ai();
 extern void	fire_bullet();
+extern int 	random();
 
 #endif
