@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h> 
+#include <time.h>
 
 #include "../headers/gba.h"
 #include "../headers/gba_sprites.h"
@@ -127,35 +128,35 @@ void track_ai() {
 	
 	if (UFOS_on_scr < 1) {
 		// Random Spawn of first UFO
-		UFOS[0].x = rand()%230;
+		UFOS[0].x = random();
 		UFOS[0].y = 20;
 		update_sprite(UFOS[0], UFOS[0].sprite_index);
 		UFOS_on_scr++;
 	}
 	if (UFOS_on_scr < 2 && get_score() > 10) {
 		// Random Spawn of UFO
-		UFOS[1].x = rand()%230;
+		UFOS[1].x = random();
 		UFOS[1].y = 20;
 		update_sprite(UFOS[1], UFOS[1].sprite_index);
 		UFOS_on_scr++;
 	}
 	if (UFOS_on_scr < 3 && get_score() > 15) {
 		// Random Spawn of UFO
-		UFOS[2].x = rand()%230;
+		UFOS[2].x = random();
 		UFOS[2].y = 20;
 		update_sprite(UFOS[2], UFOS[2].sprite_index);
 		UFOS_on_scr++;
 	}
 	if (UFOS_on_scr < 4 && get_score() > 20) {
 		// Random Spawn of UFO
-		UFOS[3].x = rand()%230;
+		UFOS[3].x = random();
 		UFOS[3].y = 20;
 		update_sprite(UFOS[3], UFOS[3].sprite_index);
 		UFOS_on_scr++;
 	}
 	if (UFOS_on_scr < 5 && get_score() > 25) {
 		// Random Spawn of UFO
-		UFOS[4].x = rand()%230;
+		UFOS[4].x = random();
 		UFOS[4].y = 20;
 		update_sprite(UFOS[4], UFOS[4].sprite_index);
 		UFOS_on_scr++;
@@ -259,6 +260,12 @@ void track_bullet() {
 	
 }
 
+
+int random(void) {
+	
+	int i = 1 + rand() % 140;
+	return i;
+}
 
 	
 	
