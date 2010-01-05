@@ -201,14 +201,15 @@ void track_ai() {
 	u16 loop;
 	for(loop = 0;loop < UFOS_LEN; loop++) {
 		// check if ufo is hit by a plane
-		if( UFOS[loop].y+10 >= space_ship.y && 
+		if( (UFOS[loop].y+10 >= space_ship.y && 
 			UFOS[loop].y-10 <= space_ship.y && 
 			UFOS[loop].x+10 >= space_ship.x && 
-			UFOS[loop].x-10 <= space_ship.x ) {
-			set_health( get_health() - 1 );
-			UFOS[loop].x = random();
-			UFOS[loop].y = 20;
-			update_sprite(UFOS[loop], UFOS[loop].sprite_index);
+			UFOS[loop].x-10 <= space_ship.x) ||
+			UFOS[loop].y >= space_ship.y+2) {
+				set_health( get_health() - 1 );
+				UFOS[loop].x = random();
+				UFOS[loop].y = 20;
+				update_sprite(UFOS[loop], UFOS[loop].sprite_index);
 		}		
 	}
 	track_bullet();
@@ -228,7 +229,8 @@ void track_bullet() {
 	for(loop=0; loop<UFOS_LEN; loop++) {
 		if (bullet.x+10 >= UFOS[loop].x &&
 		    bullet.x-10 <= UFOS[loop].x &&
-			bullet.y-2 <= UFOS[loop].y) {
+			bullet.y-2 <= UFOS[loop].y && 
+			UFOS[loop].y > 0) {
 				//Start Explosion
 				if(!UFOS_expl_on_scr){
 					explosion.x = UFOS[loop].x - 10;
