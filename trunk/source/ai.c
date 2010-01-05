@@ -17,7 +17,7 @@
 
 #define UFOS_LEN 6
 #define EXPLOSION_LEN 20
-Sprite  space_ship, explosion, bullet;
+Sprite  space_ship, explosion, bullet, powerup1, powerup2;
 Sprite UFOS[UFOS_LEN];
 // keep track of important ufo information
 u16 UFOS_on_scr = 0; // keeps track of amount of ufo's on screen.
@@ -26,6 +26,8 @@ u16 Explosion_len = EXPLOSION_LEN; //Duration of explosion of a UFO
 
 // keeping track of vsync is useful for removing explosions from screen.
 u16 AI_vsync_count = 1;
+
+
 
 
 /**
@@ -82,6 +84,12 @@ void initialize_ai() {
 		
 	for(loop = 9728; loop < 10240; loop++)
 		OAMData[loop] = BoomTiles[loop-9728];
+	
+	for(loop = 10240; loop < 10752; loop++)
+		OAMData[loop] = powerup1Tiles[loop-10240];
+	
+	for(loop = 10752; loop < 11264; loop++)
+		OAMData[loop] = powerup2Tiles[loop-10752];
 		
 	/**
 	* Load UFOs and give them sprite numbers.
@@ -103,6 +111,14 @@ void initialize_ai() {
 	 */
 	explosion.OAMSpriteNum = 21; // sprite tile index: 608
 	explosion.sprite_index = 608;
+	
+	/**
+	 * Load powerup sprites.
+	 */
+	 powerup1.OAMSpriteNum = 22; // sprite tile index: 640
+	 powerup1.sprite_index = 640;
+	 powerup2.OAMSpriteNum = 23; // sprite tile index: 672
+	 powerup2.sprite_index = 672;
 }
 
 
@@ -132,13 +148,16 @@ void track_ai() {
 		UFOS[0].y = 20;
 		update_sprite(UFOS[0], UFOS[0].sprite_index);
 		UFOS_on_scr++;
+		
+
 	}
 	if (UFOS_on_scr < 2 && get_score() > 10) {
 		// Random Spawn of UFO
-		UFOS[1].x = random();
-		UFOS[1].y = 20;
-		update_sprite(UFOS[1], UFOS[1].sprite_index);
+		UFOS[5].x = random();
+		UFOS[5].y = 20;
+		update_sprite(UFOS[5], UFOS[5].sprite_index);
 		UFOS_on_scr++;
+		
 	}
 	if (UFOS_on_scr < 3 && get_score() > 15) {
 		// Random Spawn of UFO
@@ -146,6 +165,7 @@ void track_ai() {
 		UFOS[2].y = 20;
 		update_sprite(UFOS[2], UFOS[2].sprite_index);
 		UFOS_on_scr++;
+		
 	}
 	if (UFOS_on_scr < 4 && get_score() > 20) {
 		// Random Spawn of UFO
@@ -162,30 +182,31 @@ void track_ai() {
 		UFOS_on_scr++;
 	}
 	
+	
 	//Moving the UFO's
 	if(AI_vsync_count%10==0){
 		UFOS[0].x += (space_ship.x - UFOS[0].x)/(space_ship.y - UFOS[0].y);
-		UFOS[0].y++;
+		UFOS[0].y+=3;
 		update_sprite(UFOS[0], UFOS[0].sprite_index);
 	}
 	if(get_score() > 10 && AI_vsync_count%9==0){
-		UFOS[1].x += (space_ship.x - UFOS[1].x)/(space_ship.y - UFOS[1].y);
-		UFOS[1].y++;
-		update_sprite(UFOS[1], UFOS[1].sprite_index);
+		UFOS[5].x += (space_ship.x - UFOS[5].x)/(space_ship.y - UFOS[1].y);
+		UFOS[5].y+=3;
+		update_sprite(UFOS[5], UFOS[5].sprite_index);
 	}
 	if(get_score() > 15 && AI_vsync_count%8==0){
 		UFOS[2].x += (space_ship.x - UFOS[2].x)/(space_ship.y - UFOS[2].y);
-		UFOS[2].y++;
+		UFOS[2].y+=3;
 		update_sprite(UFOS[2], UFOS[2].sprite_index);
 	}
 	if(get_score() > 20 && AI_vsync_count%7==0){
 		UFOS[3].x += (space_ship.x - UFOS[3].x)/(space_ship.y - UFOS[3].y);
-		UFOS[3].y++;
+		UFOS[3].y+=3;
 		update_sprite(UFOS[3], UFOS[3].sprite_index);
 	}
 	if(get_score() > 25 && AI_vsync_count%6==0){
 		UFOS[4].x += (space_ship.x - UFOS[4].x)/(space_ship.y - UFOS[4].y);
-		UFOS[4].y++;
+		UFOS[4].y+=3;
 		update_sprite(UFOS[4], UFOS[4].sprite_index);
 	}
 	
@@ -238,6 +259,7 @@ void track_bullet() {
 					update_sprite(explosion, explosion.sprite_index);
 					UFOS_expl_on_scr = 1;
 					Explosion_len = EXPLOSION_LEN;
+					
 
 				}
 				//Respawn UFO
@@ -265,15 +287,7 @@ void track_bullet() {
 	
 }
 
-
 int random(void) {
-	
-	int i = 1 + rand() % 140;
+	int i = 1 + rand() % 140; // creates a random number between 1 and 140
 	return i;
 }
-
-	
-	
-
-
-

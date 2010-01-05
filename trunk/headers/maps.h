@@ -20,6 +20,8 @@
 #include "../levels/level1/sprites/Boom.h"	 // Explosion sprite
 #include "../levels/level1/map/Spacemap.h" 	 // space map
 #include "../levels/level1/Pallet/Pallet.h"  // Color Pallet
+#include "../levels/level1/sprites/powerup1.h" // powerup1 sprite
+#include "../levels/level1/sprites/powerup2.h" // powerup2 sprite
 
 
 #endif

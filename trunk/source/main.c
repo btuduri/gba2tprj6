@@ -4,8 +4,8 @@
  * the game loop.
  *
  * @date	11/12/09
- * @author	Wouter van Teijlingen, Wesley Hilhorst
- * @email	wouter@0xff.nl, wesley.hilhorst@gmail.com
+ * @author	Wouter van Teijlingen, Wesley Hilhorst, Sebastiaan Seegers
+ * @email	wouter@0xff.nl, wesley.hilhorst@gmail.com, Sseegers@gmail.com
  */
 
 #include "../headers/gba.h"				// GBA register definitions
@@ -25,6 +25,7 @@
 /**
  * Usefull game vars
  */
+int main(void);
 signed int space_ship_movespeed;  
 Sprite space_ship, UFO, bullet, UFO2, UFO3, UFO4, UFO5, UFO6;
  
@@ -142,6 +143,37 @@ void initialize_pause() {
 	uninitialize_pause();
 	
 }
+/**
+ * initializes the game over screen
+ */
+ 
+void initialize_gameover(){
+	if(get_health() == 0){
+		
+		reset_background();
+		save_highscore();
+
+		// Set the Gameover bitmap on screen
+		SET_MODE( MODE_3 | BG2_ENABLE ); 	
+		dma_fast_copy((void*)GameoverBitmap, (void*)VideoBuffer, GameoverBitmapLen / 2, DMA_16NOW);
+		
+		u32 key = 1;
+		while(key) {
+			if(KEYDOWN(KEY_START)) {
+				u8 release = 0;
+				while(!release) {
+					if(!KEYDOWN(KEY_START)) {
+						release = 1;
+						key = 0;
+					}
+				}
+			}
+		}	
+		// restart the game
+		main();
+	}
+} 
+
 
 
 /**
@@ -245,6 +277,7 @@ int main() {
 		wait_for_vsync();
 		copy_oam();
 		rotate_background();
+		initialize_gameover();
 	}
 	return 0;
 }
