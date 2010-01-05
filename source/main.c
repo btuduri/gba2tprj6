@@ -125,10 +125,10 @@ void initialize_pause() {
 
 	u32 pause = 1;
 	while(pause) {
-		if (KEYDOWN(KEY_A)) {
+		if (KEYDOWN(KEY_START)) {
 			u8 release = 0;
 			while(!release) {
-				if (!KEYDOWN(KEY_A)) {
+				if (!KEYDOWN(KEY_START)) {
 					release = 1;
 					pause = 0;
 				}
@@ -143,10 +143,10 @@ void initialize_pause() {
 	uninitialize_pause();
 	
 }
+
 /**
  * initializes the game over screen
  */
- 
 void initialize_gameover(){
 	if(get_health() == 0){
 		
@@ -173,8 +173,6 @@ void initialize_gameover(){
 		main();
 	}
 } 
-
-
 
 /**
  * Function for handling the keys.
@@ -207,7 +205,7 @@ void get_input() {
 	}
 
 	
-	if(KEYDOWN(KEY_A)) { u8 release = 0; while(!release) { if (!KEYDOWN(KEY_A)) { release = 1; } }
+	if(KEYDOWN(KEY_START)) { u8 release = 0; while(!release) { if (!KEYDOWN(KEY_START)) { release = 1; } }
 		//set_score( get_score() + 1 );
 		//space_ship_movespeed = 2;
 		initialize_pause();
