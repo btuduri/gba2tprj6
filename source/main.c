@@ -149,7 +149,6 @@ void initialize_pause() {
  */
 void initialize_gameover(){
 	if(get_health() == 0){
-		
 		reset_background();
 		save_highscore();
 
