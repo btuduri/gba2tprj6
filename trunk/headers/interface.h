@@ -34,8 +34,13 @@ extern void load_highscores();
 extern void save_highscore();
 extern int get_score();
 
+//Show highscore
+extern void show_highscore( int x , int y);
+extern int pow(int x,int y);
+
 // Health
 extern void set_health( int hp );
 extern int get_health();
+
 
 #endif

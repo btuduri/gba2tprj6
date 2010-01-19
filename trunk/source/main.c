@@ -120,8 +120,12 @@ void initialize_pause() {
 	reset_background();
 	
 	// Set the PauseScreen bitmap on screen
- 	SET_MODE( MODE_3 | BG2_ENABLE ); 
-	dma_fast_copy((void*)PausescreenBitmap, (void*)VideoBuffer, PausescreenBitmapLen / 2, DMA_16NOW); 
+	//	SET_MODE( MODE_3 | BG2_ENABLE ); 
+	//	dma_fast_copy((void*)PausescreenBitmap, (void*)VideoBuffer, PausescreenBitmapLen / 2, DMA_16NOW); 
+
+
+	show_highscore( 115 , 45 );
+	copy_oam();
 
 	u32 pause = 1;
 	while(pause) {

@@ -2,10 +2,9 @@
  * Functions to set the game score and show it
  *
  * @date	11/12/09
- * @author	Wesley Hilhorst
+ * @author	Wesley Hilhorst, Jeroen Visser
  * @email	wesley.hilhorst@gmail.com
  */
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +17,7 @@ int segment_1, segment_2, segment_3, segment_4, ship_health, ship_maxhealth;
 int highscores[11] = {0,0,0,0,0,0,0,0,0,0,0};
 
 Sprite score_1, score_2, score_3, score_4;
-
+Sprite high_score[20];
 
 /**
  * Load all score interface tiles into memory
@@ -72,6 +71,10 @@ void initialize_interface() {
 	score_3.OAMSpriteNum = 2;
 	score_4.OAMSpriteNum = 3;
 	
+	int i;
+	for( i = 0; i <= 20; i++ )	high_score[i].OAMSpriteNum = i+4;
+
+
 	// Load highscores
 	load_highscores();
 
@@ -217,3 +220,32 @@ void load_highscores() {
 	}
  
  }
+ 
+ /**
+ * Show highscore
+ */
+void show_highscore( int x , int y) {
+	int i;
+	for( i = 0; i < 20; i++ ){
+		int score = highscores[10-(i/4)];
+		
+		// Set score position
+		high_score[i].x = x-(i%4*8);
+		high_score[i].y = y+(i/4*10);
+		
+		sprites[high_score[i].OAMSpriteNum].attribute0 = COLOR_256 | SQUARE | high_score[i].y;					//setup sprite info, 256 colour, shape and y-coord
+		sprites[high_score[i].OAMSpriteNum].attribute1 = SIZE_32 | high_score[i].x;							//size 32x32 and x-coord
+		sprites[high_score[i].OAMSpriteNum].attribute2 = (((int)( score / pow(10,(i%4))) % 10) * 32); 
+
+	}
+} 
+//Pow function
+int pow(int x, int y){
+	if(y==0)return(1);
+	else if(y%2==0){
+		return(pow(x,y/2)*pow(x,(y/2)));
+	}
+	else {
+		return(x*pow(x,y/2)*pow(x,(y/2)));
+	}
+}
