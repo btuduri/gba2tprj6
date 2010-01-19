@@ -15,17 +15,23 @@
 #include "../headers/interface.h"
 #include "../headers/maps.h"			// maps header file
 
+#define Powerups_len 2
 #define UFOS_LEN 6
+
 #define EXPLOSION_LEN 20
 Sprite  space_ship, explosion, bullet, powerup1, powerup2;
 Sprite UFOS[UFOS_LEN];
+Sprite Powerups[Powerups_len];
 // keep track of important ufo information
 u16 UFOS_on_scr = 0; // keeps track of amount of ufo's on screen.
+u16 powerup_on_scr = 0; // keeps track of amount of powerups
 u16 UFOS_expl_on_scr = 0; // keeps track of explosion, boolean value.
 u16 Explosion_len = EXPLOSION_LEN; //Duration of explosion of a UFO
 
 // keeping track of vsync is useful for removing explosions from screen.
 u16 AI_vsync_count = 1;
+
+
 
 
 
@@ -106,19 +112,24 @@ void initialize_ai() {
 	UFOS[4].sprite_index   = 544;
 	UFOS[5].OAMSpriteNum   = 20; // sprite tile index: 576
 	UFOS[5].sprite_index   = 576;
-	/**
-	 * load explosion sprite.
-	 */
-	explosion.OAMSpriteNum = 21; // sprite tile index: 608
-	explosion.sprite_index = 608;
 	
 	/**
 	 * Load powerup sprites.
 	 */
-	 powerup1.OAMSpriteNum = 22; // sprite tile index: 640
-	 powerup1.sprite_index = 640;
-	 powerup2.OAMSpriteNum = 23; // sprite tile index: 672
-	 powerup2.sprite_index = 672;
+	Powerups[1].OAMSpriteNum = 22; // sprite tile index: 640
+	Powerups[1].sprite_index = 640;
+	Powerups[2].OAMSpriteNum = 23; // sprite tile index: 672
+	Powerups[2].sprite_index = 672;
+	
+	/**
+	 * Load explosion sprite.
+	 */
+	explosion.OAMSpriteNum = 21; // sprite tile index: 608
+	explosion.sprite_index = 608;
+	
+	
+	 
+	 
 }
 
 
@@ -144,7 +155,7 @@ void track_ai() {
 	
 	if (UFOS_on_scr < 1) {
 		// Random Spawn of first UFO
-		UFOS[0].x = random();
+		UFOS[0].x = random(140);
 		UFOS[0].y = 20;
 		update_sprite(UFOS[0], UFOS[0].sprite_index);
 		UFOS_on_scr++;
@@ -153,7 +164,7 @@ void track_ai() {
 	}
 	if (UFOS_on_scr < 2 && get_score() > 10) {
 		// Random Spawn of UFO
-		UFOS[5].x = random();
+		UFOS[5].x = random(140);
 		UFOS[5].y = 20;
 		update_sprite(UFOS[5], UFOS[5].sprite_index);
 		UFOS_on_scr++;
@@ -161,26 +172,26 @@ void track_ai() {
 	}
 	if (UFOS_on_scr < 3 && get_score() > 15) {
 		// Random Spawn of UFO
-		UFOS[2].x = random();
+		UFOS[2].x = random(140);
 		UFOS[2].y = 20;
 		update_sprite(UFOS[2], UFOS[2].sprite_index);
 		UFOS_on_scr++;
-		
 	}
 	if (UFOS_on_scr < 4 && get_score() > 20) {
 		// Random Spawn of UFO
-		UFOS[3].x = random();
+		UFOS[3].x = random(140);
 		UFOS[3].y = 20;
 		update_sprite(UFOS[3], UFOS[3].sprite_index);
 		UFOS_on_scr++;
 	}
 	if (UFOS_on_scr < 5 && get_score() > 25) {
 		// Random Spawn of UFO
-		UFOS[4].x = random();
+		UFOS[4].x = random(140);
 		UFOS[4].y = 20;
 		update_sprite(UFOS[4], UFOS[4].sprite_index);
 		UFOS_on_scr++;
 	}
+	
 	
 	
 	//Moving the UFO's
@@ -203,12 +214,15 @@ void track_ai() {
 		UFOS[3].x += (space_ship.x - UFOS[3].x)/(space_ship.y - UFOS[3].y);
 		UFOS[3].y+=3;
 		update_sprite(UFOS[3], UFOS[3].sprite_index);
+		
 	}
 	if(get_score() > 25 && AI_vsync_count%5==0){
 		UFOS[4].x += (space_ship.x - UFOS[4].x)/(space_ship.y - UFOS[4].y);
 		UFOS[4].y+=3;
 		update_sprite(UFOS[4], UFOS[4].sprite_index);
 	}
+	
+	
 	
 	
 	// the following things should be added:
@@ -228,9 +242,6 @@ void track_ai() {
 			UFOS[loop].x-10 <= space_ship.x) ||
 			UFOS[loop].y >= space_ship.y+2) {
 				set_health( get_health() - 1 );
-				if(get_health()==0){
-					save_highscore();
-				}
 				UFOS[loop].x = random();
 				UFOS[loop].y = 20;
 				update_sprite(UFOS[loop], UFOS[loop].sprite_index);
@@ -238,6 +249,7 @@ void track_ai() {
 		
 	}
 	track_bullet();
+	powerup(1, 5, 10);
 }
 
 
@@ -289,9 +301,33 @@ void track_bullet() {
 		UFOS_expl_on_scr = 0;
 	}
 	
+	
 }
 
-int random(void) {
-	int i = 1 + rand() % 140; // creates a random number between 1 and 140
+/**
+* This function handles the powerups
+*/
+void powerup(int nr, int score, int speed){
+		if(powerup_on_scr < 1 && get_score() > score){
+			Powerups[nr].x = random(100);
+			Powerups[nr].y = random(100);
+			update_sprite(Powerups[nr], Powerups[nr].sprite_index);
+			powerup_on_scr++;
+		}
+		
+		if(get_score() > score && AI_vsync_count%speed==0){
+			Powerups[nr].y+=3;
+			update_sprite(Powerups[nr], Powerups[nr].sprite_index);
+		}
+	
+			
+}
+
+
+
+int random(int number) {
+	int i = 1 + rand() % number; // creates a random number between 1 and a chosen number
 	return i;
 }
+
+
