@@ -17,7 +17,6 @@
 
 #define Powerups_len 2
 #define UFOS_LEN 6
-
 #define EXPLOSION_LEN 20
 Sprite  space_ship, explosion, bullet, powerup1, powerup2;
 Sprite UFOS[UFOS_LEN];
@@ -97,6 +96,14 @@ void initialize_ai() {
 	for(loop = 10752; loop < 11264; loop++)
 		OAMData[loop] = powerup2Tiles[loop-10752];
 		
+		
+		
+		
+		
+		
+		
+	
+	
 	/**
 	* Load UFOs and give them sprite numbers.
 	*/
@@ -115,21 +122,18 @@ void initialize_ai() {
 	
 	/**
 	 * Load powerup sprites.
-	 */
-	Powerups[1].OAMSpriteNum = 22; // sprite tile index: 640
-	Powerups[1].sprite_index = 640;
-	Powerups[2].OAMSpriteNum = 23; // sprite tile index: 672
-	Powerups[2].sprite_index = 672;
+	*/
+	Powerups[0].OAMSpriteNum = 22; // sprite tile index: 640
+	Powerups[0].sprite_index = 640;
+	Powerups[1].OAMSpriteNum = 23; // sprite tile index: 672
+	Powerups[1].sprite_index = 672;
 	
 	/**
 	 * Load explosion sprite.
 	 */
 	explosion.OAMSpriteNum = 21; // sprite tile index: 608
 	explosion.sprite_index = 608;
-	
-	
-	 
-	 
+
 }
 
 
@@ -242,14 +246,14 @@ void track_ai() {
 			UFOS[loop].x-10 <= space_ship.x) ||
 			UFOS[loop].y >= space_ship.y+2) {
 				set_health( get_health() - 1 );
-				UFOS[loop].x = random();
+				UFOS[loop].x = random(140);
 				UFOS[loop].y = 20;
 				update_sprite(UFOS[loop], UFOS[loop].sprite_index);
 		}
 		
 	}
 	track_bullet();
-	powerup(1, 5, 10);
+	powerup(0, 5, 10);
 }
 
 
@@ -308,15 +312,20 @@ void track_bullet() {
 * This function handles the powerups
 */
 void powerup(int nr, int score, int speed){
-		if(powerup_on_scr < 1 && get_score() > score){
-			Powerups[nr].x = random(100);
-			Powerups[nr].y = random(100);
+		if(powerup_on_scr == 0 && get_score() > score){
+			Powerups[nr].x = random(240);
+			Powerups[nr].y = 20;
 			update_sprite(Powerups[nr], Powerups[nr].sprite_index);
-			powerup_on_scr++;
+			powerup_on_scr = 1;
 		}
 		
 		if(get_score() > score && AI_vsync_count%speed==0){
 			Powerups[nr].y+=3;
+			update_sprite(Powerups[nr], Powerups[nr].sprite_index);
+		}
+		
+		if(powerup_on_scr == 1 && Powerups[nr].y > 160){
+			Powerups[nr].y = 165;
 			update_sprite(Powerups[nr], Powerups[nr].sprite_index);
 		}
 	
