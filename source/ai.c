@@ -29,7 +29,6 @@ u16 Explosion_len = EXPLOSION_LEN; //Duration of explosion of a UFO
 
 // keeping track of vsync is useful for removing explosions from screen.
 u16 AI_vsync_count = 1;
-static int count = 0;
 
  
 
@@ -330,7 +329,7 @@ void powerup(int nr, int score, int speed){
 		}
 		
 		
-		if(count == 0 && nr == 0){
+		if(nr == 0){
 			// check if plane hits a powerup
 				if( (Powerups[nr].y+5 >= space_ship.y && 
 				Powerups[nr].y-5 <= space_ship.y && 
@@ -339,7 +338,6 @@ void powerup(int nr, int score, int speed){
 				Powerups[nr].y >= space_ship.y+2) {
 				set_health( get_health() + 1);
 				Powerups[nr].y = 165;
-				count++;
 				}
 		}
 		if(nr == 1){
