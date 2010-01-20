@@ -36,7 +36,7 @@ extern int get_score();
 
 //Show highscore
 extern void show_highscore( int x , int y);
-//extern int pow(int x,int y);
+extern int pow(int x,int y);
 
 // Health
 extern void set_health( int hp );

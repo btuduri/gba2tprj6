@@ -15,7 +15,7 @@
 #include "../headers/interface.h"
 #include "../headers/maps.h"			// maps header file
 
-#define Powerups_len 2
+#define Powerups_len 4
 #define UFOS_LEN 6
 #define EXPLOSION_LEN 20
 Sprite  space_ship, explosion, bullet, powerup1, powerup2;
@@ -95,6 +95,9 @@ void initialize_ai() {
 	
 	for(loop = 10752; loop < 11264; loop++)
 		OAMData[loop] = powerup2Tiles[loop-10752];
+	
+	for(loop = 11264; loop < 11776; loop++)
+		OAMData[loop] = powerup3Tiles[loop-11264];
 		
 		
 		
@@ -127,6 +130,8 @@ void initialize_ai() {
 	Powerups[0].sprite_index = 640;
 	Powerups[1].OAMSpriteNum = 23; // sprite tile index: 672
 	Powerups[1].sprite_index = 672;
+	Powerups[2].OAMSpriteNum = 24; // sprite tile index: 704
+	Powerups[1].sprite_index = 704;
 	
 	/**
 	 * Load explosion sprite.
@@ -163,6 +168,8 @@ void track_ai() {
 		UFOS[0].y = 20;
 		update_sprite(UFOS[0], UFOS[0].sprite_index);
 		UFOS_on_scr++;
+		powerup(0, 1, 10);
+		
 	}
 	if (UFOS_on_scr < 2 && get_score() > 10) {
 		// Random Spawn of UFO
@@ -250,8 +257,13 @@ void track_ai() {
 		
 	}
 	track_bullet();
-	powerup(0, 1, 10);
-	powerup(0, 5, 10);
+
+	powerup(0, 10, 10, 0);
+	powerup(1, 15, 10, 1);
+	powerup(1, 25, 10, 2);
+	powerup(1, 35, 10, 3);
+	powerup(1, 45, 10, 4);
+	powerup(2, 100, 10, 5);
 }
 
 
@@ -289,7 +301,6 @@ void track_bullet() {
 				bullet.y = -2;
 				bullet.x = -2;
 				update_sprite(bullet, bullet.sprite_index );
-				
 				set_score( get_score() + 1 );
 			}
 	}
@@ -309,12 +320,12 @@ void track_bullet() {
 /**
 * This function handles the powerups
 */
-void powerup(int nr, int score, int speed){
-		if(powerup_on_scr == 0 && get_score() > score){
+void powerup(int nr, int score, int speed, int pros){
+		if(powerup_on_scr == pros && get_score() > score){
 			Powerups[nr].x = random(1, 240);
 			Powerups[nr].y = 20;
 			update_sprite(Powerups[nr], Powerups[nr].sprite_index);
-			powerup_on_scr = 1;
+			powerup_on_scr++;
 		}
 		
 		if(get_score() > score && AI_vsync_count%speed==0){
@@ -323,33 +334,46 @@ void powerup(int nr, int score, int speed){
 			
 		}
 		
-		if(powerup_on_scr == 1 && Powerups[nr].y > 160){
+		if(powerup_on_scr == pros && Powerups[nr].y > 160){
 			Powerups[nr].y = 165;
 			update_sprite(Powerups[nr], Powerups[nr].sprite_index);
 		}
 		
-		
 		if(nr == 0){
-			// check if plane hits a powerup
-				if( (Powerups[nr].y+5 >= space_ship.y && 
-				Powerups[nr].y-5 <= space_ship.y && 
-				Powerups[nr].x+5 >= space_ship.x && 
-				Powerups[nr].x-5 <= space_ship.x) ||
-				Powerups[nr].y >= space_ship.y+2) {
-				set_health( get_health() + 1);
-				Powerups[nr].y = 165;
-				}
-		}
-		if(nr == 1){
-			// check if plane hits a powerup
-				if( (Powerups[nr].y+10 >= space_ship.y && 
+		// check if plane hits a powerup
+			if( (Powerups[nr].y+10 >= space_ship.y && 
 				Powerups[nr].y-10 <= space_ship.y && 
 				Powerups[nr].x+10 >= space_ship.x && 
 				Powerups[nr].x-10 <= space_ship.x) ||
 				Powerups[nr].y >= space_ship.y+2) {
+				set_score( get_score() + 5 );
 				Powerups[nr].y = 165; 
-				}
+			}
 		}
+		
+		if(nr == 1){
+		// check if plane hits a powerup
+			if( (Powerups[nr].y+10 >= space_ship.y && 
+				Powerups[nr].y-10 <= space_ship.y && 
+				Powerups[nr].x+10 >= space_ship.x && 
+				Powerups[nr].x-10 <= space_ship.x) ||
+				Powerups[nr].y >= space_ship.y+2) {
+				set_health( get_health() + 1);   // BUGGED
+				Powerups[nr].y = 165;
+			}
+		}
+		
+		if(nr == 3){
+			if( (Powerups[nr].y+10 >= space_ship.y && 
+				Powerups[nr].y-10 <= space_ship.y && 
+				Powerups[nr].x+10 >= space_ship.x && 
+				Powerups[nr].x-10 <= space_ship.x) ||
+				Powerups[nr].y >= space_ship.y+2) {
+				set_health( get_health() + 5);   
+				Powerups[nr].y = 165;
+			}
+		}
+		
 }
 
 

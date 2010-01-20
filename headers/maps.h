@@ -22,6 +22,7 @@
 #include "../levels/level1/Pallet/Pallet.h"  // Color Pallet
 #include "../levels/level1/sprites/powerup1.h" // powerup1 sprite
 #include "../levels/level1/sprites/powerup2.h" // powerup2 sprite
+#include "../levels/level1/sprites/powerup3.h" // powerup3 sprite
 
 
 #endif
