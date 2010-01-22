@@ -28,12 +28,13 @@ u16 UFOS_expl_on_scr = 0; // keeps track of explosion, boolean value.
 u16 Explosion_len = EXPLOSION_LEN; //Duration of explosion of a UFO
 
 // keeping track of vsync is useful for removing explosions from screen.
-u16 AI_vsync_count = 1;
+u16 AI_vsync_count = 1; 
 
- 
+u16 count = 0;
 
 
 
+	
 
 /**
  * Load all AI tiles into memory
@@ -98,14 +99,6 @@ void initialize_ai() {
 	
 	for(loop = 11264; loop < 11776; loop++)
 		OAMData[loop] = powerup3Tiles[loop-11264];
-		
-		
-		
-		
-		
-		
-		
-	
 	
 	/**
 	* Load UFOs and give them sprite numbers.
@@ -128,10 +121,16 @@ void initialize_ai() {
 	*/
 	Powerups[0].OAMSpriteNum = 22; // sprite tile index: 640
 	Powerups[0].sprite_index = 640;
+	Powerups[0].x = 245;			// sets x coordinate 
+	Powerups[0].y = 165;			// sets y coordinate
 	Powerups[1].OAMSpriteNum = 23; // sprite tile index: 672
 	Powerups[1].sprite_index = 672;
+	Powerups[1].x = 245;
+	Powerups[1].y = 165;
 	Powerups[2].OAMSpriteNum = 24; // sprite tile index: 704
-	Powerups[1].sprite_index = 704;
+	Powerups[2].sprite_index = 704;
+	Powerups[2].x = 245;
+	Powerups[2].y = 165;
 	
 	/**
 	 * Load explosion sprite.
@@ -164,7 +163,7 @@ void track_ai() {
 	
 	if (UFOS_on_scr < 1) {
 		// Random Spawn of first UFO
-		UFOS[0].x = random(1, 240);
+		UFOS[0].x = random(1, 220);
 		UFOS[0].y = 20;
 		update_sprite(UFOS[0], UFOS[0].sprite_index);
 		UFOS_on_scr++;
@@ -173,28 +172,28 @@ void track_ai() {
 	}
 	if (UFOS_on_scr < 2 && get_score() > 10) {
 		// Random Spawn of UFO
-		UFOS[5].x = random(1, 240);
+		UFOS[5].x = random(1, 220);
 		UFOS[5].y = 20;
 		update_sprite(UFOS[5], UFOS[5].sprite_index);
 		UFOS_on_scr++;
 	}
 	if (UFOS_on_scr < 3 && get_score() > 15) {
 		// Random Spawn of UFO
-		UFOS[2].x = random(1, 240);
+		UFOS[2].x = random(1, 220);
 		UFOS[2].y = 20;
 		update_sprite(UFOS[2], UFOS[2].sprite_index);
 		UFOS_on_scr++;
 	}
 	if (UFOS_on_scr < 4 && get_score() > 20) {
 		// Random Spawn of UFO
-		UFOS[3].x = random(1, 240);
+		UFOS[3].x = random(1, 220);
 		UFOS[3].y = 20;
 		update_sprite(UFOS[3], UFOS[3].sprite_index);
 		UFOS_on_scr++;
 	}
 	if (UFOS_on_scr < 5 && get_score() > 25) {
 		// Random Spawn of UFO
-		UFOS[4].x = random(1, 240);
+		UFOS[4].x = random(1, 220);
 		UFOS[4].y = 20;
 		update_sprite(UFOS[4], UFOS[4].sprite_index);
 		UFOS_on_scr++;
@@ -250,22 +249,42 @@ void track_ai() {
 			UFOS[loop].x-10 <= space_ship.x) ||
 			UFOS[loop].y >= space_ship.y+2) {
 				set_health( get_health() - 1 );
-				UFOS[loop].x = random(1, 240);
+				UFOS[loop].x = random(1, 220);
 				UFOS[loop].y = 20;
 				update_sprite(UFOS[loop], UFOS[loop].sprite_index);
 		}
 		
 	}
 	track_bullet();
+	
+	
+	// sets u16 to max so no powerups can spawn
+	u16 powerup1score = 65000; 
+	u16 powerup2score = 65000;
+	u16 powerup3score = 65000;
+	
+	
+    if(powerup_on_scr==0) {
+		powerup1score = 10;
+	}
+    else if(powerup_on_scr==1){
+		powerup2score = 25;
+	}
+    else if(powerup_on_scr==2){
+		powerup3score = 60;
+	}
+    else if(powerup_on_scr==3){
+		powerup1score = 30;
+	}
+    else if(powerup_on_scr==4){
+		powerup2score = 45;
+	}
 
-	powerup(0, 10, 10, 0);
-	powerup(1, 15, 10, 1);
-	powerup(1, 25, 10, 2);
-	powerup(1, 35, 10, 3);
-	powerup(1, 45, 10, 4);
-	powerup(2, 100, 10, 5);
+	powerup(0, powerup1score, 10);
+	powerup(1, powerup2score, 10);
+	powerup(2, powerup3score, 10);
+
 }
-
 
 /**
  * this function handles the bullet.
@@ -314,68 +333,49 @@ void track_bullet() {
 		UFOS_expl_on_scr = 0;
 	}
 	
-	
 }
 
 /**
 * This function handles the powerups
 */
-void powerup(int nr, int score, int speed, int pros){
-		if(powerup_on_scr == pros && get_score() > score){
-			Powerups[nr].x = random(1, 240);
-			Powerups[nr].y = 20;
-			update_sprite(Powerups[nr], Powerups[nr].sprite_index);
-			powerup_on_scr++;
-		}
-		
-		if(get_score() > score && AI_vsync_count%speed==0){
-			Powerups[nr].y+=3;
-			update_sprite(Powerups[nr], Powerups[nr].sprite_index);
+void powerup(int type, int score, int speed){
+     if(!(Powerups[type].x<=240 && Powerups[type].y<=160)){
+	 
+          if(get_score() > score){       
+                Powerups[type].x = random(1, 220);
+        		Powerups[type].y = 20;
+        		update_sprite(Powerups[type], Powerups[type].sprite_index);
+        		powerup_on_scr++; 
+          }                                           
+     }else{    		
+    	if(Powerups[type].y > 160){
+    		Powerups[type].y = 165;
+    		update_sprite(Powerups[type], Powerups[type].sprite_index);
 			
-		}
-		
-		if(powerup_on_scr == pros && Powerups[nr].y > 160){
-			Powerups[nr].y = 165;
-			update_sprite(Powerups[nr], Powerups[nr].sprite_index);
-		}
-		
-		if(nr == 0){
-		// check if plane hits a powerup
-			if( (Powerups[nr].y+10 >= space_ship.y && 
-				Powerups[nr].y-10 <= space_ship.y && 
-				Powerups[nr].x+10 >= space_ship.x && 
-				Powerups[nr].x-10 <= space_ship.x) ||
-				Powerups[nr].y >= space_ship.y+2) {
-				set_score( get_score() + 5 );
-				Powerups[nr].y = 165; 
+    	}else if( (Powerups[type].y+10 >= space_ship.y && 
+    			Powerups[type].y-10 <= space_ship.y && 
+    			Powerups[type].x+10 >= space_ship.x && 
+    			Powerups[type].x-10 <= space_ship.x) ||
+    			Powerups[type].y >= space_ship.y+2) {
+				
+            if(type==0){
+				set_score( get_score() + 5 );	
+			}	
+            if(type==1){
+				set_health( get_health() + 1);   
 			}
-		}
-		
-		if(nr == 1){
-		// check if plane hits a powerup
-			if( (Powerups[nr].y+10 >= space_ship.y && 
-				Powerups[nr].y-10 <= space_ship.y && 
-				Powerups[nr].x+10 >= space_ship.x && 
-				Powerups[nr].x-10 <= space_ship.x) ||
-				Powerups[nr].y >= space_ship.y+2) {
-				set_health( get_health() + 1);   // BUGGED
-				Powerups[nr].y = 165;
-			}
-		}
-		
-		if(nr == 3){
-			if( (Powerups[nr].y+10 >= space_ship.y && 
-				Powerups[nr].y-10 <= space_ship.y && 
-				Powerups[nr].x+10 >= space_ship.x && 
-				Powerups[nr].x-10 <= space_ship.x) ||
-				Powerups[nr].y >= space_ship.y+2) {
-				set_health( get_health() + 5);   
-				Powerups[nr].y = 165;
-			}
-		}
-		
+            if(type==2){  
+				set_health( get_health() + 5);  
+			} 
+             Powerups[type].y = 165;
+			 update_sprite(Powerups[type], Powerups[type].sprite_index);
+             
+    	}else if(AI_vsync_count%speed==0){
+    		Powerups[type].y+=3;
+    		update_sprite(Powerups[type], Powerups[type].sprite_index);	
+    	}
+     }		
 }
-
 
 
 int random(int start, int number) {
