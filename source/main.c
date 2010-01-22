@@ -78,7 +78,7 @@ void initialize_game() {
 
 	// Set interface info for the start
 	set_score( 0000 );
-	set_health( 4 );		
+	set_health( 5 );		
 		
 }
 
@@ -124,7 +124,7 @@ void initialize_pause() {
 	//	dma_fast_copy((void*)PausescreenBitmap, (void*)VideoBuffer, PausescreenBitmapLen / 2, DMA_16NOW); 
 
 
-	show_highscore( 115 , 45 );
+	show_highscore( 115 , 15 );
 	copy_oam();
 
 	u32 pause = 1;

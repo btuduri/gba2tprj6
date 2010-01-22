@@ -17,7 +17,7 @@ int segment_1, segment_2, segment_3, segment_4, ship_health, ship_maxhealth;
 int highscores[11] = {0,0,0,0,0,0,0,0,0,0,0};
 
 Sprite score_1, score_2, score_3, score_4;
-Sprite high_score[20];
+Sprite high_score[40];
 
 /**
  * Load all score interface tiles into memory
@@ -72,7 +72,7 @@ void initialize_interface() {
 	score_4.OAMSpriteNum = 3;
 	
 	int i;
-	for( i = 0; i <= 20; i++ )	high_score[i].OAMSpriteNum = i+4;
+	for( i = 0; i <= 40; i++ )	high_score[i].OAMSpriteNum = i+4;
 
 
 	// Load highscores
@@ -135,21 +135,24 @@ int get_score() {
 
 
 /**
- * Set healthbar on a specific health (0-5)
+ * Set healthbar on a specific health (0-ship_maxhealth)
  */
 void set_health( int hp ) {
 	
 	int x, y;	
 	int shiftright = 5;
 	
-	if( hp > ship_maxhealth || hp < 0)
-		hp = 4;	
+	if( hp > ship_maxhealth )
+		hp = 5;	
+		
+	if( hp < 0 )
+	    hp = 0;
 	
 	int loop;
-	for( loop = 0; loop < ship_maxhealth; loop++ ) {
+	for( loop = 1; loop <= ship_maxhealth; loop++ ) {
 	
 		y = 128;
-		x = (loop * 17) + shiftright;
+		x = ((loop-1) * 17) + shiftright;
 	
 		if( hp < loop ) {
 			y = -2;
@@ -221,12 +224,25 @@ void load_highscores() {
  
  }
  
+ 
+ //Pow function
+int pow(int x, int y){
+	if(y==0)return(1);
+	else if(y%2==0){
+		return(pow(x,y/2)*pow(x,(y/2)));
+	}
+	else {
+		return(x*pow(x,y/2)*pow(x,(y/2)));
+	}
+}
+ 
+ 
  /**
  * Show highscore
  */
 void show_highscore( int x , int y) {
 	int i;
-	for( i = 0; i < 20; i++ ){
+	for( i = 0; i < 40; i++ ){
 		int score = highscores[10-(i/4)];
 		
 		// Set score position
@@ -239,13 +255,3 @@ void show_highscore( int x , int y) {
 
 	}
 } 
-//Pow function
-int pow(int x, int y){
-	if(y==0)return(1);
-	else if(y%2==0){
-		return(pow(x,y/2)*pow(x,(y/2)));
-	}
-	else {
-		return(x*pow(x,y/2)*pow(x,(y/2)));
-	}
-}
