@@ -162,7 +162,6 @@ void track_ai() {
 		UFOS[0].y = 20;
 		update_sprite(UFOS[0], UFOS[0].sprite_index);
 		UFOS_on_scr++;
-		powerup(0, 1, 10);
 		
 	}
 	if (UFOS_on_scr < 2 && get_score() > 10) {
@@ -253,12 +252,12 @@ void track_ai() {
 	track_bullet();
 	
 	
-	// sets u16 to max so no powerups can spawn
+	//Sets u16 to max so no powerups can spawn
 	u16 powerup1score = 65000; 
 	u16 powerup2score = 65000;
 	u16 powerup3score = 65000;
 	
-	// sets on which score the powerups may spawn
+	//Sets on which score the powerups may spawn
     if(powerup_on_scr==0) {
 		powerup1score = 10;
 	}
@@ -275,8 +274,8 @@ void track_ai() {
 		powerup2score = 45;
 	}
 
-	// Calls the function powerup sets the powerup type
-	// Sets the powerup score and the speed of the powerups
+	//Calls the function powerup sets the powerup type
+	//Sets the powerup score and the speed of the powerups
 	powerup(0, powerup1score, 10);
 	powerup(1, powerup2score, 10);
 	powerup(2, powerup3score, 10);
@@ -336,7 +335,7 @@ void track_bullet() {
 * This function handles the powerups
 */
 void powerup(int type, int score, int speed){
-	 //sets spawn coordinates for the powerups
+	 //Sets spawn coordinates for the powerups
      if(!(Powerups[type].x<=240 && Powerups[type].y<=160)){
           if(get_score() > score){       
                 Powerups[type].x = random(1, 220);
@@ -355,7 +354,7 @@ void powerup(int type, int score, int speed){
     			Powerups[type].x-10 <= space_ship.x) ||
     			Powerups[type].y >= space_ship.y+2) {
 				
-			// chooses what every powerup does
+			//Chooses what every powerup does
             if(type==0){
 				set_score( get_score() + 5 );	
 			}	
@@ -365,21 +364,22 @@ void powerup(int type, int score, int speed){
             if(type==2){  
 				set_health( get_health() + 5);  
 			} 
-			 // Deletes powerup from screen
+			 //Deletes powerup from screen
              Powerups[type].y = 165;
 			 update_sprite(Powerups[type], Powerups[type].sprite_index);
            
-		// sets speed of the powerups
+		//Sets speed of the powerups
     	}else if(AI_vsync_count%speed==0){
     		Powerups[type].y+=3;
     		update_sprite(Powerups[type], Powerups[type].sprite_index);	
     	}
      }		
 }
-
-
+/**
+* This function creates a random number between 1 and a chosen number
+*/
 int random(int start, int number) {
-	int i = start + rand() % number; // creates a random number between 1 and a chosen number
+	int i = start + rand() % number; 
 	return i;
 }
 
