@@ -30,11 +30,6 @@ u16 Explosion_len = EXPLOSION_LEN; //Duration of explosion of a UFO
 // keeping track of vsync is useful for removing explosions from screen.
 u16 AI_vsync_count = 1; 
 
-u16 count = 0;
-
-
-
-	
 
 /**
  * Load all AI tiles into memory
